@@ -1,5 +1,5 @@
 {
-  "name": "my-app",
+  "name": "smart-irrigation-system",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,19 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/node": "25.6.0",
-    "@types/react": "19.2.14",
-    "@types/react-dom": "19.2.3",
-    "eslint": "9.39.4",
-    "eslint-config-next": "16.2.3",
-    "next": "16.2.3",
-    "react": "19.2.5",
-    "react-dom": "19.2.5",
-    "typescript": "6.0.2"
+    "next": "14.2.5",
+    "react": "^18",
+    "react-dom": "^18",
+    "recharts": "^2.12.7",
+    "lucide-react": "^0.383.0",
+    "clsx": "^2.1.1"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.27",
-    "postcss": "^8.5.9",
-    "tailwindcss": "^3.4.19"
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.0.1",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5"
   }
 }

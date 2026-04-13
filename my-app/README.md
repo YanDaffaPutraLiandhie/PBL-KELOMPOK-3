@@ -1,38 +1,86 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🌿 Smart Irrigation System — Next.js Dashboard
 
-## Getting Started
+Dashboard monitoring sistem irigasi cerdas berbasis Next.js 14 dengan tampilan real-time.
 
-First, run the development server:
+## 🚀 Cara Menjalankan
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Jalankan development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Buka browser
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+---
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## 📁 Struktur Project
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```
+smart-irrigation/
+├── app/
+│   ├── globals.css         # Global styles & CSS variables
+│   ├── layout.tsx          # Root layout (HTML wrapper)
+│   └── page.tsx            # Halaman utama dashboard
+├── components/
+│   ├── Header.tsx          # Header dengan toggle dark/light
+│   ├── SensorCards.tsx     # Kartu sensor (kelembaban, suhu, pompa)
+│   ├── ChartSection.tsx    # Grafik histori (Recharts)
+│   ├── IrrigationStats.tsx # Statistik penyiraman
+│   ├── ActivityLog.tsx     # Log aktivitas
+│   ├── WaterAvailability.tsx # Ketersediaan air
+│   └── QuickControl.tsx    # Kontrol manual cepat
+├── lib/
+│   └── mockData.ts         # Data simulasi sensor
+├── next.config.js
+├── tailwind.config.js
+├── tsconfig.json
+└── package.json
+```
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## ✨ Fitur
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Dark / Light Mode** — Toggle tema secara real-time
+- **Data Sensor Real-time** — Update otomatis setiap 5 detik (simulasi)
+- **Grafik Histori** — Kelembaban tanah & suhu (Recharts AreaChart)
+- **Statistik Penyiraman** — Normal, Nitrogen N, Buka Valve Draen
+- **Log Aktivitas** — Catat setiap aksi kontrol manual
+- **Ketersediaan Air** — Progress bar dinamis dengan kode warna
+- **Kontrol Manual** — Tombol aksi cepat dengan loading state
+- **Fully Responsive** — Mobile-first layout
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🔧 Integrasi API (Opsional)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Untuk menghubungkan ke sensor nyata, ganti fungsi di `lib/mockData.ts` dengan API call ke backend/IoT gateway:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```typescript
+// Contoh fetch data dari ESP32 / Arduino
+export async function fetchSensorData() {
+  const res = await fetch("http://your-device-ip/api/sensors");
+  return res.json();
+}
+```
+
+---
+
+## 🛠 Tech Stack
+
+- **Next.js 14** (App Router)
+- **TypeScript**
+- **Tailwind CSS**
+- **Recharts** — Grafik
+- **Lucide React** — Ikon
