@@ -1,6 +1,7 @@
 "use client";
 
-import { Sun, Moon, Wifi, WifiOff, Droplets } from "lucide-react";
+import Link from "next/link";
+import { Sun, Moon, Wifi, WifiOff, Droplets, ChevronDown } from "lucide-react";
 
 interface HeaderProps {
   theme: "dark" | "light";
@@ -8,7 +9,11 @@ interface HeaderProps {
   isOnline: boolean;
 }
 
-export default function Header({ theme, onToggleTheme, isOnline }: HeaderProps) {
+export default function Header({
+  theme,
+  onToggleTheme,
+  isOnline,
+}: HeaderProps) {
   const now = new Date();
   const dateStr = now.toLocaleDateString("id-ID", {
     day: "2-digit",
@@ -24,9 +29,10 @@ export default function Header({ theme, onToggleTheme, isOnline }: HeaderProps) 
     <header
       className="sticky top-0 z-50 px-4 py-3 flex items-center justify-between"
       style={{
-        background: theme === "dark"
-          ? "rgba(10, 15, 26, 0.95)"
-          : "rgba(255, 255, 255, 0.95)",
+        background:
+          theme === "dark"
+            ? "rgba(10, 15, 26, 0.95)"
+            : "rgba(255, 255, 255, 0.95)",
         borderBottom: "1px solid var(--border)",
         backdropFilter: "blur(12px)",
       }}
@@ -42,11 +48,21 @@ export default function Header({ theme, onToggleTheme, isOnline }: HeaderProps) 
         <div>
           <h1
             className="font-bold text-sm leading-tight"
-            style={{ color: "var(--primary)", fontFamily: "'Exo 2', sans-serif", letterSpacing: "0.05em" }}
+            style={{
+              color: "var(--primary)",
+              fontFamily: "'Exo 2', sans-serif",
+              letterSpacing: "0.05em",
+            }}
           >
             Smart Irrigation System
           </h1>
-          <p className="text-xs" style={{ color: "var(--text-muted)", fontFamily: "'Share Tech Mono', monospace" }}>
+          <p
+            className="text-xs"
+            style={{
+              color: "var(--text-muted)",
+              fontFamily: "'Share Tech Mono', monospace",
+            }}
+          >
             VVPF-DLSGT-JQN-1
           </p>
         </div>
@@ -58,7 +74,9 @@ export default function Header({ theme, onToggleTheme, isOnline }: HeaderProps) 
         <div
           className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
           style={{
-            background: isOnline ? "rgba(0, 229, 160, 0.1)" : "rgba(239, 68, 68, 0.1)",
+            background: isOnline
+              ? "rgba(0, 229, 160, 0.1)"
+              : "rgba(239, 68, 68, 0.1)",
             border: `1px solid ${isOnline ? "rgba(0, 229, 160, 0.3)" : "rgba(239, 68, 68, 0.3)"}`,
           }}
         >
@@ -86,17 +104,93 @@ export default function Header({ theme, onToggleTheme, isOnline }: HeaderProps) 
         <div className="hidden sm:flex flex-col items-end">
           <span
             className="text-xs"
-            style={{ color: "var(--text-primary)", fontFamily: "'Share Tech Mono', monospace" }}
+            style={{
+              color: "var(--text-primary)",
+              fontFamily: "'Share Tech Mono', monospace",
+            }}
           >
             {timeStr}
           </span>
           <span
             className="text-xs"
-            style={{ color: "var(--text-muted)", fontFamily: "'Share Tech Mono', monospace", fontSize: "0.6rem" }}
+            style={{
+              color: "var(--text-muted)",
+              fontFamily: "'Share Tech Mono', monospace",
+              fontSize: "0.6rem",
+            }}
           >
             {dateStr}
           </span>
         </div>
+
+        <div className="relative hidden md:block group">
+          <button
+            className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg transition-all hover:scale-105"
+            style={{
+              color: "var(--primary)",
+              border: "1px solid var(--border)",
+              background: "rgba(0, 229, 160, 0.08)",
+              fontFamily: "'Share Tech Mono', monospace",
+            }}
+            aria-label="Menu Manajemen"
+          >
+            Manajemen
+            <ChevronDown className="w-3.5 h-3.5" />
+          </button>
+
+          <div
+            className="absolute right-0 mt-2 w-44 rounded-lg p-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all"
+            style={{
+              background: "var(--card-bg)",
+              border: "1px solid var(--border)",
+              boxShadow: "0 10px 30px rgba(0, 0, 0, 0.25)",
+            }}
+          >
+            <Link
+              href="/tanaman"
+              className="block w-full px-3 py-2 rounded text-xs"
+              style={{
+                color: "var(--text-primary)",
+                fontFamily: "'Share Tech Mono', monospace",
+              }}
+            >
+              Manajemen Tanaman
+            </Link>
+            <Link
+              href="/tandon"
+              className="block w-full px-3 py-2 rounded text-xs"
+              style={{
+                color: "var(--text-primary)",
+                fontFamily: "'Share Tech Mono', monospace",
+              }}
+            >
+              Manajemen Tandon
+            </Link>
+            <Link
+              href="/pengguna"
+              className="block w-full px-3 py-2 rounded text-xs"
+              style={{
+                color: "var(--text-primary)",
+                fontFamily: "'Share Tech Mono', monospace",
+              }}
+            >
+              Manajemen Akun
+            </Link>
+          </div>
+        </div>
+
+        <Link
+          href="/login"
+          className="hidden md:inline-flex text-xs px-2.5 py-1 rounded-lg transition-all hover:scale-105"
+          style={{
+            color: "#ef4444",
+            border: "1px solid rgba(239, 68, 68, 0.4)",
+            background: "rgba(239, 68, 68, 0.08)",
+            fontFamily: "'Share Tech Mono', monospace",
+          }}
+        >
+          Logout
+        </Link>
 
         {/* Theme Toggle */}
         <button
