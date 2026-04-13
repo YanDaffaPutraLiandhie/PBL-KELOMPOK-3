@@ -77,7 +77,7 @@ export default function Dashboard() {
         : "water-saving";
     const newEvent: IrrigationEvent = {
       timestamp: new Date(),
-      duration: action.includes("intensif") ? 10 : action.includes("hemat") ? 3 : 5,
+      duration: action.includes("intensif") ? 10 : action.includes("hemat") ? 20 : 5,
       type: eventType as "quick" | "intensive" | "water-saving",
     };
     setIrrigationEvents((prev) => [...prev, newEvent]);
@@ -128,3 +128,4 @@ export default function Dashboard() {
     </>
   );
 }
+

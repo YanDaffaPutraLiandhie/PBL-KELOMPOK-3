@@ -10,19 +10,19 @@ interface IrrigationModesProps {
 
 const irrigationModes = [
   {
-    label: "Siram Cepat(5 detik)",
+    label: "Siram Cepat (5 detik)",
     color: "#00e5a0",
     action: "Penyiraman cepat diaktifkan (5 detik)",
   },
   {
-    label: "Siram cepat(10 detik)",
+    label: "Siram Intensif (10 detik)",
     color: "#00c8ff",
-    action: "Penyiraman cepat diaktifkan (10 detik)",
+    action: "Penyiraman intensif diaktifkan (10 detik)",
   },
   {
-    label: "siram ceapat(20 detik)",
+    label: "Siram Hemat (20 detik)",
     color: "#7c3aed",
-    action: "Penyiraman cepat diaktifkan (20 detik)",
+    action: "Penyiraman hemat diaktifkan (20 detik)",
   },
 ];
 
