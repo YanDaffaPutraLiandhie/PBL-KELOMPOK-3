@@ -7,7 +7,7 @@ import IrrigationTracking from "@/components/IrrigationTracking";
 import ActivityLog from "@/components/ActivityLog";
 import WaterAvailability from "@/components/WaterAvailability";
 import IrrigationModes from "@/components/IrrigationModes";
-import { generateSensorData, generateIrrigationEvents } from "@/lib/mockData";
+
 import type { IrrigationEvent } from "@/lib/mockData";
 
 export default function Dashboard() {
@@ -18,21 +18,60 @@ export default function Dashboard() {
   const [irrigationEvents, setIrrigationEvents] = useState<IrrigationEvent[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Initialize data after hydration and setup real-time updates (only for sensor values, not pump status)
+
+  // Fetch data dari API dummy
   useEffect(() => {
     setIsHydrated(true);
-    setSensorData(generateSensorData());
-    setIrrigationEvents(generateIrrigationEvents());
 
-    // Only update sensor values (soilMoisture and temperature), not pump status
-    const interval = setInterval(() => {
-      setSensorData((prev) => ({
-        ...prev,
-        soilMoisture: 48 + Math.floor(Math.random() * 6 - 3),
-        temperature: 25 + parseFloat((Math.random() * 2 - 1).toFixed(1)),
-      }));
-    }, 5000);
-    return () => clearInterval(interval);
+    // Fetch sensor data
+    fetch("/api/sensor/all")
+      .then((res) => res.json())
+      .then((data) => {
+        const soil = data.find((d: any) => d.type === "soilMoisture");
+        const temp = data.find((d: any) => d.type === "temperature");
+        setSensorData((prev) => ({
+          ...prev,
+          soilMoisture: soil ? soil.value : 0,
+          temperature: temp ? temp.value : 0,
+        }));
+      });
+
+    // Fetch pump status
+    fetch("/api/actuator/status")
+      .then((res) => res.json())
+      .then((data) => {
+        setSensorData((prev) => ({
+          ...prev,
+          pumpStatus: data.status === "ON" ? "AKTIF" : "NON-AKTIF",
+        }));
+      });
+
+    // Fetch irrigation events/statistics
+    fetch("/api/statistics/irrigation")
+      .then((res) => res.json())
+      .then((data) => {
+        // Contoh: data.today, data.week, data.month
+        setIrrigationEvents([
+          {
+            timestamp: new Date(),
+            duration: data.today.duration,
+            type: "quick",
+          },
+        ]);
+      });
+
+    // Fetch logs
+    fetch("/api/logs/irrigation")
+      .then((res) => res.json())
+      .then((data) => {
+        setLogs(
+          data.map((item: any) => ({
+            time: new Date(item.time || Date.now()).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+            message: `${item.mode} (${item.status})`,
+            type: "pump",
+          }))
+        );
+      });
   }, []);
 
   const toggleTheme = () => {
