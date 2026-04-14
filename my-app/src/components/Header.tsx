@@ -162,24 +162,65 @@ export default function Header({
             <Link
               href="/management/users"
               className="block w-full px-3 py-2 rounded text-xs"
+        <div className="flex gap-2">
+          {/* Button Manajemen */}
+          <div className="relative hidden md:block group">
+            <button
+              className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg transition-all hover:scale-105"
               style={{
-                color: "var(--text-primary)",
+                color: "var(--primary)",
+                border: "1px solid var(--border)",
+                background: "rgba(0, 229, 160, 0.08)",
                 fontFamily: "'Share Tech Mono', monospace",
               }}
+              aria-label="Menu Manajemen"
             >
-              Manajemen Pengguna
-            </Link>
-            <Link
-              href="/management/accounts"
-              className="block w-full px-3 py-2 rounded text-xs"
+              Manajemen
+              <ChevronDown className="w-3.5 h-3.5" />
+            </button>
+            <div
+              className="absolute right-0 mt-2 w-44 rounded-lg p-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all"
               style={{
-                color: "var(--text-primary)",
-                fontFamily: "'Share Tech Mono', monospace",
+                background: "var(--card-bg)",
+                border: "1px solid var(--border)",
+                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.25)",
               }}
             >
-              Manajemen Akun
-            </Link>
+              <Link
+                href="/management/users"
+                className="block w-full px-3 py-2 rounded text-xs"
+                style={{
+                  color: "var(--text-primary)",
+                  fontFamily: "'Share Tech Mono', monospace",
+                }}
+              >
+                Manajemen Pengguna
+              </Link>
+              <Link
+                href="/management/accounts"
+                className="block w-full px-3 py-2 rounded text-xs"
+                style={{
+                  color: "var(--text-primary)",
+                  fontFamily: "'Share Tech Mono', monospace",
+                }}
+              >
+                Manajemen Akun
+              </Link>
+            </div>
           </div>
+          {/* Button Konfigurasi */}
+          <Link
+            href="/setting/configuration"
+            className="hidden md:inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg transition-all hover:scale-105"
+            style={{
+              color: "var(--primary)",
+              border: "1px solid var(--border)",
+              background: "rgba(0, 200, 255, 0.08)",
+              fontFamily: "'Share Tech Mono', monospace",
+            }}
+          >
+            Konfigurasi
+          </Link>
         </div>
 
         {/* Theme Toggle */}
