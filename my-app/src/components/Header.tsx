@@ -123,6 +123,45 @@ export default function Header({
           </span>
         </div>
 
+        <Link
+          href="/analytics"
+          className="hidden md:inline-flex items-center text-xs px-2.5 py-1 rounded-lg transition-all hover:scale-105"
+          style={{
+            color: "var(--primary)",
+            border: "1px solid var(--border)",
+            background: "rgba(0, 200, 255, 0.08)",
+            fontFamily: "'Share Tech Mono', monospace",
+          }}
+        >
+          Analytics
+        </Link>
+
+        <div className="relative hidden md:block group">
+          <button
+            className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg transition-all hover:scale-105"
+            style={{
+              color: "var(--primary)",
+              border: "1px solid var(--border)",
+              background: "rgba(0, 229, 160, 0.08)",
+              fontFamily: "'Share Tech Mono', monospace",
+            }}
+            aria-label="Menu Manajemen"
+          >
+            Manajemen
+            <ChevronDown className="w-3.5 h-3.5" />
+          </button>
+
+          <div
+            className="absolute right-0 mt-2 w-44 rounded-lg p-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all"
+            style={{
+              background: "var(--card-bg)",
+              border: "1px solid var(--border)",
+              boxShadow: "0 10px 30px rgba(0, 0, 0, 0.25)",
+            }}
+          >
+            <Link
+              href="/management/users"
+              className="block w-full px-3 py-2 rounded text-xs"
         <div className="flex gap-2">
           {/* Button Manajemen */}
           <div className="relative hidden md:block group">
