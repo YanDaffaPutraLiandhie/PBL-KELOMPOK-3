@@ -123,6 +123,19 @@ export default function Header({
           </span>
         </div>
 
+        <Link
+          href="/analytics"
+          className="hidden md:inline-flex items-center text-xs px-2.5 py-1 rounded-lg transition-all hover:scale-105"
+          style={{
+            color: "var(--primary)",
+            border: "1px solid var(--border)",
+            background: "rgba(0, 200, 255, 0.08)",
+            fontFamily: "'Share Tech Mono', monospace",
+          }}
+        >
+          Analytics
+        </Link>
+
         <div className="relative hidden md:block group">
           <button
             className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg transition-all hover:scale-105"
