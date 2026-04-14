@@ -118,49 +118,6 @@ export default function WeeklyChart({ title, dataKey, unit, color }: WeeklyChart
         </div>
       </div>
 
-      {/* Daily Status Section */}
-      <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl shadow-lg p-6 border border-slate-700 hover:shadow-xl transition-shadow" style={{ background: 'var(--bg-800)' }}>
-        <h3 className="text-lg font-bold mb-4" style={{ color: 'var(--text-primary)' }}>Status Harian - Seminggu Terakhir</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr style={{ borderBottomColor: 'var(--border-color, #374151)' }} className="border-b-2">
-                <th className="text-left py-3 px-4 font-semibold" style={{ color: 'var(--text-secondary, #9ca3af)' }}>Tanggal</th>
-                <th className="text-center py-3 px-4 font-semibold" style={{ color: 'var(--text-secondary, #9ca3af)' }}>Rata-rata ({unit})</th>
-                <th className="text-center py-3 px-4 font-semibold" style={{ color: 'var(--text-secondary, #9ca3af)' }}>Min ({unit})</th>
-                <th className="text-center py-3 px-4 font-semibold" style={{ color: 'var(--text-secondary, #9ca3af)' }}>Max ({unit})</th>
-                <th className="text-center py-3 px-4 font-semibold" style={{ color: 'var(--text-secondary, #9ca3af)' }}>Variasi</th>
-                <th className="text-center py-3 px-4 font-semibold" style={{ color: 'var(--text-secondary, #9ca3af)' }}>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {dailyStatus.map((day, idx) => (
-                <tr
-                  key={idx}
-                  style={{ borderBottomColor: 'var(--border-color, #374151)' }}
-                  className="border-b hover:bg-opacity-50 transition-colors"
-                  suppressHydrationWarning
-                >
-                  <td className="py-3 px-4 font-medium" style={{ color: 'var(--text-primary, #fff)' }}>{day.date}</td>
-                  <td className="text-center py-3 px-4" style={{ color: 'var(--text-secondary, #9ca3af)' }}>{day.avgValue}</td>
-                  <td className="text-center py-3 px-4" style={{ color: 'var(--text-secondary, #9ca3af)' }}>{day.minValue}</td>
-                  <td className="text-center py-3 px-4" style={{ color: 'var(--text-secondary, #9ca3af)' }}>{day.maxValue}</td>
-                  <td className="text-center py-3 px-4" style={{ color: 'var(--text-secondary, #9ca3af)' }}>{day.variation}</td>
-                  <td className="text-center py-3 px-4">
-                    <span className={`px-3 py-1 rounded-full text-white font-semibold text-xs ${
-                      day.status === 'Stabil'
-                        ? 'bg-green-500'
-                        : 'bg-red-500'
-                    }`}>
-                      {day.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
   );
 }
