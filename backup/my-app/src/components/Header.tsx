@@ -1,7 +1,6 @@
 "use client";
 
-import { Sun, Moon, Droplets } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Sun, Moon, Wifi, WifiOff, Droplets } from "lucide-react";
 
 interface HeaderProps {
   theme: "dark" | "light";
@@ -10,43 +9,24 @@ interface HeaderProps {
 }
 
 export default function Header({ theme, onToggleTheme, isOnline }: HeaderProps) {
-  const [timeStr, setTimeStr] = useState("");
-  const [dateStr, setDateStr] = useState("");
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-
-      setTimeStr(
-        now.toLocaleTimeString("id-ID", {
-          hour: "2-digit",
-          minute: "2-digit",
-        })
-      );
-
-      setDateStr(
-        now.toLocaleDateString("id-ID", {
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-        })
-      );
-    };
-
-    updateTime(); // initial
-    const interval = setInterval(updateTime, 1000); // realtime
-
-    return () => clearInterval(interval);
-  }, []);
+  const now = new Date();
+  const dateStr = now.toLocaleDateString("id-ID", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+  const timeStr = now.toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return (
     <header
       className="sticky top-0 z-50 px-4 py-3 flex items-center justify-between"
       style={{
-        background:
-          theme === "dark"
-            ? "rgba(10, 15, 26, 0.95)"
-            : "rgba(255, 255, 255, 0.95)",
+        background: theme === "dark"
+          ? "rgba(10, 15, 26, 0.95)"
+          : "rgba(255, 255, 255, 0.95)",
         borderBottom: "1px solid var(--border)",
         backdropFilter: "blur(12px)",
       }}
@@ -62,21 +42,11 @@ export default function Header({ theme, onToggleTheme, isOnline }: HeaderProps) 
         <div>
           <h1
             className="font-bold text-sm leading-tight"
-            style={{
-              color: "var(--primary)",
-              fontFamily: "'Exo 2', sans-serif",
-              letterSpacing: "0.05em",
-            }}
+            style={{ color: "var(--primary)", fontFamily: "'Exo 2', sans-serif", letterSpacing: "0.05em" }}
           >
             Smart Irrigation System
           </h1>
-          <p
-            className="text-xs"
-            style={{
-              color: "var(--text-muted)",
-              fontFamily: "'Share Tech Mono', monospace",
-            }}
-          >
+          <p className="text-xs" style={{ color: "var(--text-muted)", fontFamily: "'Share Tech Mono', monospace" }}>
             VVPF-DLSGT-JQN-1
           </p>
         </div>
@@ -88,23 +58,15 @@ export default function Header({ theme, onToggleTheme, isOnline }: HeaderProps) 
         <div
           className="flex items-center gap-1.5 px-2.5 py-1 rounded-full"
           style={{
-            background: isOnline
-              ? "rgba(0, 229, 160, 0.1)"
-              : "rgba(239, 68, 68, 0.1)",
-            border: `1px solid ${
-              isOnline
-                ? "rgba(0, 229, 160, 0.3)"
-                : "rgba(239, 68, 68, 0.3)"
-            }`,
+            background: isOnline ? "rgba(0, 229, 160, 0.1)" : "rgba(239, 68, 68, 0.1)",
+            border: `1px solid ${isOnline ? "rgba(0, 229, 160, 0.3)" : "rgba(239, 68, 68, 0.3)"}`,
           }}
         >
           <span
             className="w-2 h-2 rounded-full"
             style={{
               background: isOnline ? "#00e5a0" : "#ef4444",
-              boxShadow: isOnline
-                ? "0 0 6px #00e5a0"
-                : "0 0 6px #ef4444",
+              boxShadow: isOnline ? "0 0 6px #00e5a0" : "0 0 6px #ef4444",
               animation: "pulse 2s infinite",
             }}
           />
@@ -124,22 +86,15 @@ export default function Header({ theme, onToggleTheme, isOnline }: HeaderProps) 
         <div className="hidden sm:flex flex-col items-end">
           <span
             className="text-xs"
-            style={{
-              color: "var(--text-primary)",
-              fontFamily: "'Share Tech Mono', monospace",
-            }}
+            style={{ color: "var(--text-primary)", fontFamily: "'Share Tech Mono', monospace" }}
           >
-            {timeStr || "--:--"}
+            {timeStr}
           </span>
           <span
             className="text-xs"
-            style={{
-              color: "var(--text-muted)",
-              fontFamily: "'Share Tech Mono', monospace",
-              fontSize: "0.6rem",
-            }}
+            style={{ color: "var(--text-muted)", fontFamily: "'Share Tech Mono', monospace", fontSize: "0.6rem" }}
           >
-            {dateStr || "Loading..."}
+            {dateStr}
           </span>
         </div>
 
