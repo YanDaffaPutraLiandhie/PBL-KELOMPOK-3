@@ -147,27 +147,17 @@ export default function Header({
             }}
           >
             <Link
-              href="/tanaman"
+              href="/management/users"
               className="block w-full px-3 py-2 rounded text-xs"
               style={{
                 color: "var(--text-primary)",
                 fontFamily: "'Share Tech Mono', monospace",
               }}
             >
-              Manajemen Tanaman
+              Manajemen Pengguna
             </Link>
             <Link
-              href="/tandon"
-              className="block w-full px-3 py-2 rounded text-xs"
-              style={{
-                color: "var(--text-primary)",
-                fontFamily: "'Share Tech Mono', monospace",
-              }}
-            >
-              Manajemen Tandon
-            </Link>
-            <Link
-              href="/pengguna"
+              href="/management/accounts"
               className="block w-full px-3 py-2 rounded text-xs"
               style={{
                 color: "var(--text-primary)",
@@ -178,19 +168,6 @@ export default function Header({
             </Link>
           </div>
         </div>
-
-        <Link
-          href="/login"
-          className="hidden md:inline-flex text-xs px-2.5 py-1 rounded-lg transition-all hover:scale-105"
-          style={{
-            color: "#ef4444",
-            border: "1px solid rgba(239, 68, 68, 0.4)",
-            background: "rgba(239, 68, 68, 0.08)",
-            fontFamily: "'Share Tech Mono', monospace",
-          }}
-        >
-          Logout
-        </Link>
 
         {/* Theme Toggle */}
         <button
