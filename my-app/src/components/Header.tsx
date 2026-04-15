@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { Sun, Moon, Wifi, WifiOff, Droplets, ChevronDown } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Sun, Moon, Droplets, ChevronDown } from "lucide-react";
 
 interface HeaderProps {
   theme: "dark" | "light";
@@ -14,6 +16,9 @@ export default function Header({
   onToggleTheme,
   isOnline,
 }: HeaderProps) {
+  const { data: session }: any = useSession();
+  const router = useRouter();
+
   const now = new Date();
   const dateStr = now.toLocaleDateString("id-ID", {
     day: "2-digit",
@@ -38,7 +43,10 @@ export default function Header({
       }}
     >
       {/* Logo + Title */}
-      <div className="flex items-center gap-3">
+      <div
+        className="flex items-center gap-3 cursor-pointer"
+        onClick={() => router.push("/")}
+      >
         <div
           className="w-9 h-9 rounded-lg flex items-center justify-center"
           style={{ background: "linear-gradient(135deg, #00e5a0, #00c8ff)" }}
@@ -77,7 +85,11 @@ export default function Header({
             background: isOnline
               ? "rgba(0, 229, 160, 0.1)"
               : "rgba(239, 68, 68, 0.1)",
-            border: `1px solid ${isOnline ? "rgba(0, 229, 160, 0.3)" : "rgba(239, 68, 68, 0.3)"}`,
+            border: `1px solid ${
+              isOnline
+                ? "rgba(0, 229, 160, 0.3)"
+                : "rgba(239, 68, 68, 0.3)"
+            }`,
           }}
         >
           <span
@@ -102,27 +114,11 @@ export default function Header({
 
         {/* Date/Time */}
         <div className="hidden sm:flex flex-col items-end">
-          <span
-            className="text-xs"
-            style={{
-              color: "var(--text-primary)",
-              fontFamily: "'Share Tech Mono', monospace",
-            }}
-          >
-            {timeStr}
-          </span>
-          <span
-            className="text-xs"
-            style={{
-              color: "var(--text-muted)",
-              fontFamily: "'Share Tech Mono', monospace",
-              fontSize: "0.6rem",
-            }}
-          >
-            {dateStr}
-          </span>
+          <span className="text-xs">{timeStr}</span>
+          <span className="text-xs opacity-60">{dateStr}</span>
         </div>
 
+        {/* Analytics */}
         <Link
           href="/analytics"
           className="hidden md:inline-flex items-center text-xs px-2.5 py-1 rounded-lg transition-all hover:scale-105"
@@ -136,6 +132,7 @@ export default function Header({
           Analytics
         </Link>
 
+        {/* Dropdown */}
         <div className="relative hidden md:block group">
           <button
             className="inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg transition-all hover:scale-105"
@@ -145,69 +142,88 @@ export default function Header({
               background: "rgba(0, 229, 160, 0.08)",
               fontFamily: "'Share Tech Mono', monospace",
             }}
-            aria-label="Menu Manajemen"
           >
             Manajemen
             <ChevronDown className="w-3.5 h-3.5" />
           </button>
 
+          {/* ✅ FIX: hapus nested div yang tidak perlu */}
           <div
-            className="absolute right-0 mt-2 w-44 rounded-lg p-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all"
+            className="absolute right-0 mt-2 w-44 rounded-lg p-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all"
             style={{
               background: "var(--card-bg)",
               border: "1px solid var(--border)",
               boxShadow: "0 10px 30px rgba(0, 0, 0, 0.25)",
             }}
           >
-            <div className="flex gap-2">
-              {/* Button Manajemen */}
-              <div
-                className="absolute right-0 mt-2 w-44 rounded-lg p-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-focus-within:opacity-100 group-focus-within:visible transition-all"
-                style={{
-                  background: "var(--card-bg)",
-                  border: "1px solid var(--border)",
-                  boxShadow: "0 10px 30px rgba(0, 0, 0, 0.25)",
-                }}
-              >
-                <Link
-                  href="/management/users"
-                  className="block w-full px-3 py-2 rounded text-xs"
-                  style={{
-                    color: "var(--text-primary)",
-                    fontFamily: "'Share Tech Mono', monospace",
-                  }}
-                >
-                  Manajemen Pengguna
-                </Link>
-                <Link
-                  href="/management/accounts"
-                  className="block w-full px-3 py-2 rounded text-xs"
-                  style={{
-                    color: "var(--text-primary)",
-                    fontFamily: "'Share Tech Mono', monospace",
-                  }}
-                >
-                  Manajemen Akun
-                </Link>
-              </div>
-            </div>
+            <Link
+              href="/management/users"
+              className="block w-full px-3 py-2 rounded text-xs"
+              style={{
+                color: "var(--text-primary)",
+                fontFamily: "'Share Tech Mono', monospace",
+              }}
+            >
+              Manajemen Pengguna
+            </Link>
+            <Link
+              href="/management/accounts"
+              className="block w-full px-3 py-2 rounded text-xs"
+              style={{
+                color: "var(--text-primary)",
+                fontFamily: "'Share Tech Mono', monospace",
+              }}
+            >
+              Manajemen Akun
+            </Link>
           </div>
-          {/* Button Konfigurasi */}
-          <Link
-            href="/setting/configuration"
-            className="hidden md:inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg transition-all hover:scale-105"
-            style={{
-              color: "var(--primary)",
-              border: "1px solid var(--border)",
-              background: "rgba(0, 200, 255, 0.08)",
-              fontFamily: "'Share Tech Mono', monospace",
-            }}
-          >
-            Konfigurasi
-          </Link>
         </div>
 
-        {/* Theme Toggle */}
+        {/* Konfigurasi */}
+        <Link
+          href="/setting/configuration"
+          className="hidden md:inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-lg transition-all hover:scale-105"
+          style={{
+            color: "var(--primary)",
+            border: "1px solid var(--border)",
+            background: "rgba(0, 200, 255, 0.08)",
+            fontFamily: "'Share Tech Mono', monospace",
+          }}
+        >
+          Konfigurasi
+        </Link>
+
+        {/* Session */}
+        {session ? (
+          <>
+            <span className="text-xs hidden md:block">
+              {session.user.fullname}
+            </span>
+            <button
+              onClick={() => signOut()}
+              className="text-xs px-2.5 py-1 rounded-lg border"
+              style={{
+                borderColor: "#ef4444",
+                color: "#ef4444",
+              }}
+            >
+              Logout
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() => router.push("/auth/login")}
+            className="text-xs px-2.5 py-1 rounded-lg border"
+            style={{
+              borderColor: "var(--primary)",
+              color: "var(--primary)",
+            }}
+          >
+            Login
+          </button>
+        )}
+
+        {/* Theme */}
         <button
           onClick={onToggleTheme}
           className="w-8 h-8 rounded-lg flex items-center justify-center transition-all hover:scale-110"
