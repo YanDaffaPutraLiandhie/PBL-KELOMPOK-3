@@ -71,6 +71,9 @@
         font-weight: 700;
         font-size: 0.9rem;
         padding: 1rem;
+        display: block;
+        width: 100%;
+        text-align: center;
         border: none;
         border-radius: 8px;
         cursor: pointer;
@@ -133,6 +136,9 @@
   color: var(--text-primary);
   box-shadow: none;
   margin-top: 0.5rem;
+  display: block;
+  width: 100%;
+  text-align: center;
 
   &:hover {
     background: rgba(255, 255, 255, 0.05);

@@ -10,8 +10,10 @@ import IrrigationModes from "@/components/IrrigationModes";
 import { generateSensorData, generateIrrigationEvents } from "@/lib/mockData";
 import type { IrrigationEvent } from "@/lib/mockData";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 export default function Dashboard() {
-  const { data: session }: any = useSession();
+  const { data: session, status }: any = useSession();
+  const router = useRouter();
   const [theme, setTheme] = useState<"dark" | "light">("dark");
   const [sensorData, setSensorData] = useState({ soilMoisture: 0, temperature: 0, pumpStatus: "NON-AKTIF" });
   const [logs, setLogs] = useState<{ time: string; message: string; type: string }[]>([]);
@@ -84,15 +86,18 @@ export default function Dashboard() {
     setIrrigationEvents((prev) => [...prev, newEvent]);
   };
   // --- Proteksi Login ---
-  // Jika belum login, jangan tampilkan dashboard asli
-  if (!session) {
+  // Jika belum login, redirect langsung ke halaman login
+  useEffect(() => {
+    if (status !== "loading" && !session) {
+      router.replace("/auth/login");
+    }
+  }, [status, session, router]);
+
+  // Tampilkan loader singkat saat status masih loading atau saat melakukan redirect
+  if (status === "loading" || !session) {
     return (
       <div style={{ padding: '5rem 2rem', textAlign: 'center', background: 'var(--bg-900)', minHeight: '100vh' }}>
-        <h1 className="glow-text">ACCESS DENIED</h1>
-        <div className="card" style={{ marginTop: '2rem', display: 'inline-block', padding: '2rem' }}>
-          <p className="log-entry" style={{ color: '#ef4444' }}>ERROR: AUTHENTICATION_REQUIRED</p>
-          <p style={{ color: 'var(--text-primary)' }}>Silakan login untuk akses dashboard.</p>
-        </div>
+        <h1 className="glow-text">Redirecting...</h1>
       </div>
     );
   }
