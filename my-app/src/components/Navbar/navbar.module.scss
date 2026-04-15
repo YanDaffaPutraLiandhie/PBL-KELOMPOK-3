@@ -1,0 +1,38 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  &__logo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    text-shadow: 0 0 10px rgba(0, 229, 160, 0.5);
+    cursor: pointer;
+  }
+
+  &__menu {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+
+    &__user {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text-primary);
+      
+      span {
+        color: var(--primary);
+        font-weight: 600;
+      }
+    }
+  }
+}
