@@ -147,7 +147,7 @@ export default function Header({
             <ChevronDown className="w-3.5 h-3.5" />
           </button>
 
-          {/* ✅ FIX: hapus nested div yang tidak perlu */}
+          {/* FIX: hapus nested div yang tidak perlu */}
           <div
             className="absolute right-0 mt-2 w-44 rounded-lg p-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all"
             style={{
@@ -166,16 +166,7 @@ export default function Header({
             >
               Manajemen Pengguna
             </Link>
-            <Link
-              href="/management/accounts"
-              className="block w-full px-3 py-2 rounded text-xs"
-              style={{
-                color: "var(--text-primary)",
-                fontFamily: "'Share Tech Mono', monospace",
-              }}
-            >
-              Manajemen Akun
-            </Link>
+
           </div>
         </div>
 
@@ -200,7 +191,7 @@ export default function Header({
               {session.user.fullname}
             </span>
             <button
-              onClick={() => signOut()}
+              onClick={() => router.push("/auth/login")}
               className="text-xs px-2.5 py-1 rounded-lg border"
               style={{
                 borderColor: "#ef4444",
@@ -210,18 +201,7 @@ export default function Header({
               Logout
             </button>
           </>
-        ) : (
-          <button
-            onClick={() => router.push("/auth/login")}
-            className="text-xs px-2.5 py-1 rounded-lg border"
-            style={{
-              borderColor: "var(--primary)",
-              color: "var(--primary)",
-            }}
-          >
-            Login
-          </button>
-        )}
+        ) : null}
 
         {/* Theme */}
         <button
