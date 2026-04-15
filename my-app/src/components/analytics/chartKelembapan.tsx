@@ -54,7 +54,7 @@ export default function ChartKelembapan() {
     setData(generated);
   }, []);
 
-  if (!isHydrated) return null; // ⛔ cegah hydration error
+  if (!isHydrated) return null; 
 
   const stats = calculateStats(data);
   const isDown = Number(stats.change) < 0;
@@ -95,21 +95,21 @@ export default function ChartKelembapan() {
           </thead>
           <tbody>
             <tr>
-              <td className="py-1">🌡️ Kelembapan Tertinggi</td>
+              <td className="py-1"> Kelembapan Tertinggi</td>
               <td>{stats.max} %</td>
             </tr>
             <tr>
-              <td className="py-1">❄️ Kelembapan Terendah</td>
+              <td className="py-1"> Kelembapan Terendah</td>
               <td>{stats.min} %</td>
             </tr>
             <tr>
-              <td className="py-1">📊 Rata-rata</td>
+              <td className="py-1"> Rata-rata</td>
               <td>{stats.avg} %</td>
             </tr>
             <tr>
-              <td className="py-1">📈 Tren</td>
+              <td className="py-1"> Tren</td>
               <td>
-                {isDown ? "📉 Turun" : "📈 Naik"} {stats.change}%
+                {isDown ? " Turun" : " Naik"} {stats.change}%
                 <div className="text-xs text-gray-400">
                   dibanding 6 hari sebelumnya
                 </div>

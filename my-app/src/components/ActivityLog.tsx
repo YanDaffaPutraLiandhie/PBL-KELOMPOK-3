@@ -42,7 +42,7 @@ export default function ActivityLog({ logs }: ActivityLogProps) {
               className="w-8 h-8 rounded-full flex items-center justify-center"
               style={{ background: "var(--bg-600)" }}
             >
-              <span style={{ color: "var(--text-muted)", fontSize: "16px" }}>⏳</span>
+              <span style={{ color: "var(--text-muted)", fontSize: "16px" }}"></span>
             </div>
             <p
               className="text-xs text-center"

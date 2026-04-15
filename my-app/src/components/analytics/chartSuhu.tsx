@@ -54,7 +54,7 @@ export default function ChartSuhu() {
     setData(generated);
   }, []);
 
-  if (!isHydrated) return null; // ⛔ penting
+  if (!isHydrated) return null; 
 
   const stats = calculateStats(data);
   const isDown = Number(stats.change) < 0;
@@ -93,21 +93,21 @@ export default function ChartSuhu() {
           </thead>
           <tbody>
             <tr>
-              <td className="py-1">🌡️ Suhu Tertinggi</td>
+              <td className="py-1"> Suhu Tertinggi</td>
               <td>{stats.max} °C</td>
             </tr>
             <tr>
-              <td className="py-1">❄️ Suhu Terendah</td>
+              <td className="py-1"> Suhu Terendah</td>
               <td>{stats.min} °C</td>
             </tr>
             <tr>
-              <td className="py-1">📊 Rata-rata</td>
+              <td className="py-1"> Rata-rata</td>
               <td>{stats.avg} °C</td>
             </tr>
             <tr>
-              <td className="py-1">📈 Tren</td>
+              <td className="py-1">Tren</td>
               <td>
-                {isDown ? "📉 Turun" : "📈 Naik"} {stats.change}%
+                {isDown ? "Turun" : "Naik"} {stats.change}%
                 <div className="text-xs text-gray-400">
                   dibanding 6 hari sebelumnya
                 </div>

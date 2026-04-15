@@ -147,7 +147,7 @@ export default function Header({
             <ChevronDown className="w-3.5 h-3.5" />
           </button>
 
-          {/* ✅ FIX: hapus nested div yang tidak perlu */}
+          {/* FIX: hapus nested div yang tidak perlu */}
           <div
             className="absolute right-0 mt-2 w-44 rounded-lg p-1.5 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all"
             style={{
@@ -166,16 +166,7 @@ export default function Header({
             >
               Manajemen Pengguna
             </Link>
-            <Link
-              href="/management/accounts"
-              className="block w-full px-3 py-2 rounded text-xs"
-              style={{
-                color: "var(--text-primary)",
-                fontFamily: "'Share Tech Mono', monospace",
-              }}
-            >
-              Manajemen Akun
-            </Link>
+
           </div>
         </div>
 
