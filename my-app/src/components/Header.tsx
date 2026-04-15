@@ -191,7 +191,7 @@ export default function Header({
               {session.user.fullname}
             </span>
             <button
-              onClick={() => signOut()}
+              onClick={() => router.push("/auth/login")}
               className="text-xs px-2.5 py-1 rounded-lg border"
               style={{
                 borderColor: "#ef4444",
@@ -201,18 +201,7 @@ export default function Header({
               Logout
             </button>
           </>
-        ) : (
-          <button
-            onClick={() => router.push("/auth/login")}
-            className="text-xs px-2.5 py-1 rounded-lg border"
-            style={{
-              borderColor: "var(--primary)",
-              color: "var(--primary)",
-            }}
-          >
-            Login
-          </button>
-        )}
+        ) : null}
 
         {/* Theme */}
         <button
