@@ -10,6 +10,13 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
+import {
+  Thermometer,
+  Snowflake,
+  BarChart3,
+  TrendingUp,
+  TrendingDown,
+} from "lucide-react";
 
 type DataType = {
   day: number;
@@ -54,7 +61,7 @@ export default function ChartSuhu() {
     setData(generated);
   }, []);
 
-  if (!isHydrated) return null; 
+  if (!isHydrated) return null;
 
   const stats = calculateStats(data);
   const isDown = Number(stats.change) < 0;
@@ -93,21 +100,47 @@ export default function ChartSuhu() {
           </thead>
           <tbody>
             <tr>
-              <td className="py-1"> Suhu Tertinggi</td>
-              <td>{stats.max} °C</td>
+              <td className="py-1 flex items-center gap-2">
+                <Thermometer className="w-4 h-4 text-orange-400" />
+                Kelembapan Tertinggi
+              </td>
+              <td>{stats.max} %</td>
             </tr>
+
             <tr>
-              <td className="py-1"> Suhu Terendah</td>
-              <td>{stats.min} °C</td>
+              <td className="py-1 flex items-center gap-2">
+                <Snowflake className="w-4 h-4 text-blue-400" />
+                Kelembapan Terendah
+              </td>
+              <td>{stats.min} %</td>
             </tr>
+
             <tr>
-              <td className="py-1"> Rata-rata</td>
-              <td>{stats.avg} °C</td>
+              <td className="py-1 flex items-center gap-2">
+                <BarChart3 className="w-4 h-4 text-green-400" />
+                Rata-rata
+              </td>
+              <td>{stats.avg} %</td>
             </tr>
+
             <tr>
-              <td className="py-1">Tren</td>
+              <td className="py-1 flex items-center gap-2">
+                {isDown ? (
+                  <TrendingDown className="w-4 h-4 text-red-400" />
+                ) : (
+                  <TrendingUp className="w-4 h-4 text-green-400" />
+                )}
+                Tren
+              </td>
               <td>
-                {isDown ? "Turun" : "Naik"} {stats.change}%
+                <div className="flex items-center gap-1">
+                  {isDown ? (
+                    <TrendingDown className="w-4 h-4 text-red-400" />
+                  ) : (
+                    <TrendingUp className="w-4 h-4 text-green-400" />
+                  )}
+                  {stats.change}%
+                </div>
                 <div className="text-xs text-gray-400">
                   dibanding 6 hari sebelumnya
                 </div>
