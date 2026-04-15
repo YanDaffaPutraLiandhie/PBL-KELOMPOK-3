@@ -44,11 +44,11 @@ const TampilanRegister = () => {
   };
 
   return (
-    <div className={style.login}>
+    <div className={`${style.login} light`}>
       <h1 className={style.login__title}>Halaman Register</h1>
       <div className={style.login__form}>
         <form onSubmit={handleSubmit}>
-          {/* Tambahan input Fullname gawe Register */}
+          {/* Tambahan input Fullname buat Register */}
           <div className={style.login__form__item}>
             <label htmlFor="fullname" className={style.login__form__item__label}>
               Fullname

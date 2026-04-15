@@ -187,21 +187,33 @@ export default function Header({
         {/* Session */}
         {session ? (
           <>
-            <span className="text-xs hidden md:block">
-              {session.user.fullname}
-            </span>
+            <span className="text-xs hidden md:block">{session.user.fullname}</span>
             <button
-              onClick={() => router.push("/auth/login")}
+              onClick={() => signOut({ callbackUrl: '/' })}
               className="text-xs px-2.5 py-1 rounded-lg border"
-              style={{
-                borderColor: "#ef4444",
-                color: "#ef4444",
-              }}
+              style={{ borderColor: "#ef4444", color: "#ef4444" }}
             >
               Logout
             </button>
           </>
-        ) : null}
+        ) : (
+          <>
+            <button
+              onClick={() => router.push("/auth/login")}
+              className="text-xs px-2.5 py-1 rounded-lg border"
+              style={{ borderColor: "#00c8ff", color: "var(--primary)" }}
+            >
+              Login
+            </button>
+            <button
+              onClick={() => router.push("/auth/register")}
+              className="text-xs px-2.5 py-1 rounded-lg border ml-2"
+              style={{ borderColor: "#00e5a0", color: "#00e5a0" }}
+            >
+              Register
+            </button>
+          </>
+        )}
 
         {/* Theme */}
         <button

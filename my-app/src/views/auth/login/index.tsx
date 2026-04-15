@@ -41,7 +41,7 @@ const TampilanLogin = () => {
   };
 
   return (
-    <div className={style.login}>
+    <div className={`${style.login} light`}>
       <h1 className={style.login__title}>Halaman Login</h1>
 
       <div className={style.login__form}>
@@ -103,10 +103,7 @@ const TampilanLogin = () => {
 
         <br />
 
-        {/* LUPA PASSWORD */}
-        <p className={style.login__form__item__text}>
-          <Link href="/auth/forgot-password">Lupa Password?</Link>
-        </p>
+        {/* LUPA PASSWORD removed */}
 
         {/* REGISTER */}
         <p className={style.login__form__item__text}>
