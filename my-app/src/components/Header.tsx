@@ -187,10 +187,17 @@ export default function Header({
         {/* Session */}
         {session ? (
           <>
-            <span className="text-xs hidden md:block">{session.user.fullname}</span>
+            <button
+              onClick={() => router.push("/profile")}
+              className="flex items-center gap-2 text-xs px-2.5 py-1 rounded-lg"
+              style={{ background: 'transparent', border: '1px solid var(--border)' }}
+            >
+              <img src={session.user.image || '/avatar-head.svg'} alt="avatar" className="w-6 h-6 rounded-full object-cover" />
+              <span className="hidden md:block">{session.user.fullname}</span>
+            </button>
             <button
               onClick={() => signOut({ callbackUrl: '/' })}
-              className="text-xs px-2.5 py-1 rounded-lg border"
+              className="text-xs px-2.5 py-1 rounded-lg border ml-2"
               style={{ borderColor: "#ef4444", color: "#ef4444" }}
             >
               Logout

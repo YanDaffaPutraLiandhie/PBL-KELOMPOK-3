@@ -3,6 +3,8 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import GoogleProvider from "next-auth/providers/google";
+import { db } from "@/utils/db/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore"; 
 
 export const authOptions: NextAuthOptions = {
     session: {
@@ -33,6 +35,7 @@ export const authOptions: NextAuthOptions = {
                             email: user.email,
                             fullname: user.fullname,
                             role: user.role,
+                            image: user.image || "/avatar-head.svg",
                         };
                     }
                 }
@@ -46,12 +49,13 @@ export const authOptions: NextAuthOptions = {
     ],
 
     callbacks: {
-        async jwt({ token, account, user }: any) {
+       async jwt({ token, account, user, trigger, session }: any) {
             // 1. Logika untuk Login Email/Password (Credentials)
-            if (account?.provider === "credentials" && user) {
+           if (user) {
                 token.email = user.email;
                 token.fullname = user.fullname;
                 token.role = user.role;
+                token.image = user.image || "/avatar-head.svg";
             }
 
             // 2. Logika untuk Login Google (OAuth)
@@ -68,13 +72,34 @@ export const authOptions: NextAuthOptions = {
                 await loginWithOAuth(data, (result: any) => {
                     if (result.status) {
                         token.fullname = result.data.fullname;
-                        token.email = result.data.email;
-                        token.image = result.data.image;
-                        token.type = result.data.type;
                         token.role = result.data.role;
+                        token.image = result.data.image;
                     }
                 });
             }
+            
+
+         // 3. LOGIKA SINKRONISASI (Agar Nama Tidak Balik Lagi)
+            if (trigger === "update" && session?.user?.fullname) {
+                // Update realtime saat klik tombol simpan
+                token.fullname = session.user.fullname;
+            } else if (token?.email) {
+                // Cari data terbaru ke Firestore berdasarkan field email
+                try {
+                    const q = query(collection(db, "users"), where("email", "==", token.email));
+                    const querySnapshot = await getDocs(q);
+                    
+                    if (!querySnapshot.empty) {
+                        const userData = querySnapshot.docs[0].data();
+                        token.fullname = userData.fullname;
+                        token.role = userData.role;
+                        if (userData.image) token.image = userData.image;
+                    }
+                } catch (error) {
+                    console.error("Gagal sinkronisasi Firestore:", error);
+                }
+            }
+            
             return token;
         },
 

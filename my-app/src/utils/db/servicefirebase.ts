@@ -54,6 +54,10 @@ export async function signUp(userData: any, callback: Function) {
     // Hash password & set default data
     userData.password = await bcrypt.hash(userData.password, 10);
     userData.role = "member";
+    // Set default avatar for manual registrations
+    if (!userData.image) {
+        userData.image = "/avatar-head.svg";
+    }
     userData.createdAt = new Date().toISOString();
 
     try {

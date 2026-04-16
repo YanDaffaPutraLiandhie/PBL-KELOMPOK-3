@@ -125,7 +125,7 @@ export default function Dashboard() {
   if (status === "loading" || !session) {
     return (
       <div style={{ padding: '5rem 2rem', textAlign: 'center', background: 'var(--bg-900)', minHeight: '100vh' }}>
-        <h1 className="glow-text">Redirecting...</h1>
+        <h1 className="glow-text">MEMUAT</h1>
       </div>
     );
   }
