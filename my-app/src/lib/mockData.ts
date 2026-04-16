@@ -35,12 +35,7 @@ export function generateIrrigationEvents(): IrrigationEvent[] {
   const now = new Date();
   const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
-  const types: Array<"quick" | "intensive" | "water-saving"> = ["quick", "intensive", "water-saving"];
-  const durations: Record<string, number> = {
-    quick: 5,
-    intensive: 10,
-    "water-saving": 3,
-  };
+  const durations: number[] = [5, 10, 20];
 
   // Generate random irrigation events for the last 30 days
   let currentDate = new Date(thirtyDaysAgo);
@@ -48,7 +43,7 @@ export function generateIrrigationEvents(): IrrigationEvent[] {
     // Randomly add 0-3 irrigation events per day
     const eventsPerDay = Math.floor(Math.random() * 4);
     for (let i = 0; i < eventsPerDay; i++) {
-      const randomType = types[Math.floor(Math.random() * types.length)];
+      const randomDuration = durations[Math.floor(Math.random() * durations.length)];
       const eventTime = new Date(currentDate);
       eventTime.setHours(Math.floor(Math.random() * 24));
       eventTime.setMinutes(Math.floor(Math.random() * 60));
@@ -56,8 +51,8 @@ export function generateIrrigationEvents(): IrrigationEvent[] {
 
       events.push({
         timestamp: eventTime,
-        duration: durations[randomType],
-        type: randomType,
+        duration: randomDuration,
+        type: randomDuration === 5 ? "quick" : randomDuration === 10 ? "intensive" : "water-saving",
       });
     }
     currentDate.setDate(currentDate.getDate() + 1);
