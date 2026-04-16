@@ -96,7 +96,9 @@ export default function Header({
             className="w-2 h-2 rounded-full"
             style={{
               background: isOnline ? "#00e5a0" : "#ef4444",
-              boxShadow: isOnline ? "0 0 6px #00e5a0" : "0 0 6px #ef4444",
+              boxShadow: isOnline
+                ? "0 0 6px #00e5a0"
+                : "0 0 6px #ef4444",
               animation: "pulse 2s infinite",
             }}
           />
