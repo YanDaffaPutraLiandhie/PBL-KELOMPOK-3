@@ -21,6 +21,34 @@ export default function Dashboard() {
   const [irrigationEvents, setIrrigationEvents] = useState<IrrigationEvent[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
 
+  // State untuk threshold konfigurasi
+  const [threshold, setThreshold] = useState<any>(null);
+  const [thresholdLoading, setThresholdLoading] = useState(true);
+
+  // Ambil threshold dari API saat halaman dimount
+  useEffect(() => {
+    const fetchThreshold = async () => {
+      try {
+        const res = await fetch("/api/config");
+        if (res.ok) {
+          const data = await res.json();
+          setThreshold(data);
+        }
+      } catch (err) {
+        // Optional: handle error
+      } finally {
+        setThresholdLoading(false);
+      }
+    };
+    fetchThreshold();
+  }, []);
+
+  // Contoh logika: warning jika soilMoisture < min atau > max
+  const showMoistureWarning = threshold && sensorData && (sensorData.soilMoisture < threshold.soilMoistureMin || sensorData.soilMoisture > threshold.soilMoistureMax);
+  const showTempWarning = threshold && sensorData && (sensorData.temperature < threshold.temperatureMin || sensorData.temperature > threshold.temperatureMax);
+  const showAlert = threshold && sensorData && (sensorData.soilMoisture > threshold.alertThreshold);
+  // ...existing code...
+
   // Initialize data after hydration and setup real-time updates (only for sensor values, not pump status)
   useEffect(() => {
     setIsHydrated(true);
@@ -116,6 +144,34 @@ export default function Dashboard() {
           <Header theme={theme} onToggleTheme={toggleTheme} isOnline={isOnline} />
 
           <main className="px-4 pb-8 pt-2 max-w-7xl mx-auto" suppressHydrationWarning>
+            {/* Tampilkan threshold info dan warning jika ada */}
+            {!thresholdLoading && threshold && (
+              <div className="mb-4">
+                <div className="text-xs text-[var(--primary)]">Konfigurasi Threshold saat ini:</div>
+                <div className="flex flex-wrap gap-4 text-xs">
+                  <span>Kelembapan Min: <b>{threshold.soilMoistureMin}</b></span>
+                  <span>Kelembapan Max: <b>{threshold.soilMoistureMax}</b></span>
+                  <span>Suhu Min: <b>{threshold.temperatureMin}°C</b></span>
+                  <span>Suhu Max: <b>{threshold.temperatureMax}°C</b></span>
+                  <span>Alert: <b>{threshold.alertThreshold}</b></span>
+                </div>
+                {showMoistureWarning && (
+                  <div className="mt-2 p-2 rounded bg-yellow-900/60 text-yellow-300 border border-yellow-400 text-xs font-semibold">
+                    Kelembapan tanah di luar batas threshold!
+                  </div>
+                )}
+                {showTempWarning && (
+                  <div className="mt-2 p-2 rounded bg-orange-900/60 text-orange-300 border border-orange-400 text-xs font-semibold">
+                    Suhu lingkungan di luar batas threshold!
+                  </div>
+                )}
+                {showAlert && (
+                  <div className="mt-2 p-2 rounded bg-pink-900/60 text-pink-300 border border-pink-400 text-xs font-semibold">
+                    ALERT: Kelembapan tanah melebihi ambang batas alert!
+                  </div>
+                )}
+              </div>
+            )}
             {/* Sensor Cards Row */}
             {isHydrated && <SensorCards data={sensorData} onPumpToggle={handlePumpToggle} />}
 

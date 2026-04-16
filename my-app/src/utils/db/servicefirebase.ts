@@ -8,6 +8,7 @@ import {
     addDoc,
     where,
     updateDoc,
+    setDoc,
 } from "firebase/firestore";
 import app from "./firebase";
 import bcrypt from "bcrypt";
@@ -99,4 +100,22 @@ export async function loginWithOAuth(userData: any, callback: any) {
             message: "Gagal memproses data Google",
         });
     }
+}
+
+// ===== Konfigurasi Threshold (Firestore) =====
+const CONFIG_COLLECTION = "config";
+const CONFIG_DOC_ID = "threshold";
+
+// Ambil konfigurasi threshold
+export async function getThresholdConfig() {
+    const docRef = doc(db, CONFIG_COLLECTION, CONFIG_DOC_ID);
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists() ? docSnap.data() : null;
+}
+
+// Simpan konfigurasi threshold
+export async function setThresholdConfig(config: any) {
+    const docRef = doc(db, CONFIG_COLLECTION, CONFIG_DOC_ID);
+    // Selalu lakukan setDoc dengan merge agar update/insert selalu berhasil
+    await setDoc(docRef, config, { merge: true });
 }
