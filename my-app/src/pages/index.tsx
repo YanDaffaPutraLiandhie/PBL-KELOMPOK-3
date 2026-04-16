@@ -10,6 +10,7 @@ import IrrigationModes from "@/components/IrrigationModes";
 import { generateSensorData, generateIrrigationEvents } from "@/lib/mockData";
 import type { IrrigationEvent } from "@/lib/mockData";
 import { useSession } from "next-auth/react";
+import { saveLog } from "@/utils/db/servicefirebase";
 export default function Dashboard() {
   const { data: session }: any = useSession();
   const [theme, setTheme] = useState<"dark" | "light">("dark");
@@ -40,12 +41,15 @@ export default function Dashboard() {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };
 
-  const handlePumpToggle = (state: boolean) => {
+  const handlePumpToggle = async (state: boolean) => {
     const now = new Date();
     const timeStr = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     const message = state ? "Pompa dihidupkan (AKTIF)" : "Pompa dimatikan (NON-AKTIF)";
     const newLog = { time: timeStr, message, type: "pump" };
     setLogs((prev) => [newLog, ...prev].slice(0, 20));
+
+    // Simpan log ke Firebase
+    await saveLog({ message, type: "pump", timestamp: now });
 
     // Update sensor data to reflect pump status change
     setSensorData((prev) => ({
@@ -64,11 +68,14 @@ export default function Dashboard() {
     }
   };
 
-  const handleQuickAction = (action: string) => {
+  const handleQuickAction = async (action: string) => {
     const now = new Date();
     const timeStr = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
     const newLog = { time: timeStr, message: action, type: "action" };
     setLogs((prev) => [newLog, ...prev].slice(0, 20));
+
+    // Simpan log ke Firebase
+    await saveLog({ message: action, type: "action", timestamp: now });
 
     // Add new irrigation event when irrigation mode is triggered
     const eventType = action.includes("cepat")

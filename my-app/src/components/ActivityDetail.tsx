@@ -21,7 +21,17 @@ enum TimePeriod {
 export default function ActivityDetail({ logs = [] }: ActivityDetailProps) {
   const [expandedPeriod, setExpandedPeriod] = useState<TimePeriod | null>(TimePeriod.TODAY);
 
-  // Generate sample logs with timestamps
+  // Convert Firebase logs to component format
+  const convertLogs = (firebaseLogs: any[]): LogEntry[] => {
+    return firebaseLogs.map(log => ({
+      time: log.timestamp.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+      message: log.message,
+      type: log.type,
+      timestamp: log.timestamp,
+    }));
+  };
+
+  // Generate sample logs with timestamps (fallback if no logs from Firebase)
   const generateLogsWithTimestamps = (): LogEntry[] => {
     const now = new Date();
     const sampleMessages = [
@@ -81,7 +91,7 @@ export default function ActivityDetail({ logs = [] }: ActivityDetailProps) {
     return generatedLogs;
   };
 
-  const allLogs = logs.length > 0 ? logs : generateLogsWithTimestamps();
+  const allLogs = logs.length > 0 ? convertLogs(logs) : generateLogsWithTimestamps();
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const weekAgo = new Date(today);

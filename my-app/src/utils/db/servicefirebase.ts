@@ -8,9 +8,10 @@ import {
     addDoc,
     where,
     updateDoc,
+    orderBy,
+    limit,
 } from "firebase/firestore";
 import app from "./firebase";
-import bcrypt from "bcrypt";
 
 const db = getFirestore(app);
 
@@ -30,73 +31,35 @@ export async function retrieveDataByID(collectionName: string, id: string) {
     return snapshot.data();
 }
 
-// Fungsi Sign In untuk Next-Auth Credentials
-export async function signIn(email: string) {
-    const q = query(collection(db, "users"), where("email", "==", email));
-    const querySnapshot = await getDocs(q);
-    const data = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-    }));
-    return data.length > 0 ? data[0] : null;
-}
-
-// Fungsi Sign Up (Register Akun Baru)
-export async function signUp(userData: any, callback: Function) {
-    const q = query(collection(db, "users"), where("email", "==", userData.email));
-    const snapshot = await getDocs(q);
-
-    if (!snapshot.empty) {
-        return callback({ status: false, message: "Email sudah terdaftar" });
-    }
-
-    // Hash password & set default data
-    userData.password = await bcrypt.hash(userData.password, 10);
-    userData.role = "member";
-    userData.createdAt = new Date().toISOString();
-
+// Fungsi untuk menyimpan log aktivitas
+export async function saveLog(logData: { message: string; type: string; timestamp?: Date }) {
     try {
-        await addDoc(collection(db, "users"), userData);
-        callback({ status: true, message: "Registrasi Berhasil" });
+        const logEntry = {
+            ...logData,
+            timestamp: logData.timestamp || new Date(),
+            createdAt: new Date().toISOString(),
+        };
+        await addDoc(collection(db, "logs"), logEntry);
+        return { status: true, message: "Log berhasil disimpan" };
     } catch (error: any) {
-        callback({ status: false, message: error.message });
+        console.error("Error saving log:", error);
+        return { status: false, message: error.message };
     }
 }
 
-// Fungsi Login/Register otomatis via Google OAuth
-export async function loginWithOAuth(userData: any, callback: any) {
+// Fungsi untuk mengambil log aktivitas
+export async function getLogs(limitCount: number = 100) {
     try {
-        const q = query(collection(db, "users"), where("email", "==", userData.email));
+        const q = query(collection(db, "logs"), orderBy("timestamp", "desc"), limit(limitCount));
         const querySnapshot = await getDocs(q);
-        const data: any = querySnapshot.docs.map((doc) => ({
+        const logs = querySnapshot.docs.map((doc) => ({
             id: doc.id,
             ...doc.data(),
+            timestamp: doc.data().timestamp?.toDate() || new Date(doc.data().createdAt),
         }));
-
-        if (data.length > 0) {
-            // User lama: update data tanpa ganti role
-            userData.role = data[0].role;
-            await updateDoc(doc(db, "users", data[0].id), userData);
-            callback({
-                status: true,
-                message: "Login Google Berhasil",
-                data: userData,
-            });
-        } else {
-            // User baru: simpan sebagai member
-            userData.role = "member";
-            userData.createdAt = new Date().toISOString();
-            await addDoc(collection(db, "users"), userData);
-            callback({
-                status: true,
-                message: "Register Google Berhasil",
-                data: userData,
-            });
-        }
+        return logs;
     } catch (error: any) {
-        callback({
-            status: false,
-            message: "Gagal memproses data Google",
-        });
+        console.error("Error getting logs:", error);
+        return [];
     }
 }
