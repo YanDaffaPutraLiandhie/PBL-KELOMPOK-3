@@ -55,16 +55,16 @@ export default function IrrigationTracking({ irrigationData }: IrrigationTrackin
   };
 
   const stats = getTimePeriodStats();
-  const typeColors: Record<string, string> = {
-    quick: "#00e5a0",
-    intensive: "#00c8ff",
-    "water-saving": "#7c3aed",
+  const durationColors: Record<string, string> = {
+    "5": "#00e5a0",
+    "10": "#00c8ff",
+    "20": "#7c3aed",
   };
 
-  const typeLabels: Record<string, string> = {
-    quick: "Siram Cepat",
-    intensive: "Siram Intensif",
-    "water-saving": "Mode Hemat",
+  const durationLabels: Record<string, string> = {
+    "5": "5 detik",
+    "10": "10 detik",
+    "20": "20 detik",
   };
 
   return (
@@ -143,41 +143,41 @@ export default function IrrigationTracking({ irrigationData }: IrrigationTrackin
         </div>
       </div>
 
-      {/* Irrigation Type Breakdown */}
+      {/* Irrigation Duration Breakdown */}
       <div className="space-y-2">
-        {["quick", "intensive", "water-saving"].map((type) => {
-          const count = stats.events.filter((e) => e.type === type).length;
-          const duration = stats.events
-            .filter((e) => e.type === type)
+        {["5", "10", "20"].map((duration) => {
+          const count = stats.events.filter((e) => e.duration === parseInt(duration)).length;
+          const totalDuration = stats.events
+            .filter((e) => e.duration === parseInt(duration))
             .reduce((sum, e) => sum + e.duration, 0);
 
           return (
             <div
-              key={type}
+              key={duration}
               className="flex items-center justify-between p-2.5 rounded-lg"
-              style={{ background: `${typeColors[type]}15` }}
+              style={{ background: `${durationColors[duration]}15` }}
             >
               <div className="flex items-center gap-2">
                 <div
                   className="w-3 h-3 rounded-sm"
                   style={{
-                    background: typeColors[type],
-                    boxShadow: `0 0 8px ${typeColors[type]}`,
+                    background: durationColors[duration],
+                    boxShadow: `0 0 8px ${durationColors[duration]}`,
                   }}
                 />
                 <span
                   className="text-xs"
                   style={{ color: "var(--text-primary)", fontFamily: "'Exo 2', sans-serif" }}
                 >
-                  {typeLabels[type]}
+                  {durationLabels[duration]}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span
                   className="text-xs font-bold"
-                  style={{ color: typeColors[type], fontFamily: "'Share Tech Mono', monospace" }}
+                  style={{ color: durationColors[duration], fontFamily: "'Share Tech Mono', monospace" }}
                 >
-                  {count}x • {duration}m
+                  {count}x • {totalDuration}m
                 </span>
               </div>
             </div>
@@ -187,21 +187,21 @@ export default function IrrigationTracking({ irrigationData }: IrrigationTrackin
 
       {/* Mini bar chart for visual representation */}
       <div className="mt-4 space-y-1.5">
-        {["quick", "intensive", "water-saving"].map((type) => {
-          const count = stats.events.filter((e) => e.type === type).length;
+        {["5", "10", "20"].map((duration) => {
+          const count = stats.events.filter((e) => e.duration === parseInt(duration)).length;
           const maxCount = Math.max(
-            ...["quick", "intensive", "water-saving"].map((t) => stats.events.filter((e) => e.type === t).length),
+            ...["5", "10", "20"].map((d) => stats.events.filter((e) => e.duration === parseInt(d)).length),
             1
           );
 
           return (
-            <div key={type} className="h-1 rounded-full" style={{ background: "var(--bg-600)" }}>
+            <div key={duration} className="h-1 rounded-full" style={{ background: "var(--bg-600)" }}>
               <div
                 className="h-full rounded-full transition-all duration-700"
                 style={{
                   width: `${(count / maxCount) * 100}%`,
-                  background: typeColors[type],
-                  boxShadow: `0 0 6px ${typeColors[type]}60`,
+                  background: durationColors[duration],
+                  boxShadow: `0 0 6px ${durationColors[duration]}60`,
                 }}
               />
             </div>

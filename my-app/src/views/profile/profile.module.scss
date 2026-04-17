@@ -1,0 +1,137 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8fafc; // Background terang
+  padding: 1rem;
+}
+
+.card {
+  width: 100%;
+  max-width: 850px;
+  display: flex;
+  background: #ffffff; // Putih bersih
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.sidebar {
+  width: 280px;
+  padding: 2.5rem 2rem;
+  background: #f1f5f9; // Abu-abu sangat muda
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+
+  .sidebarTop {
+    margin-bottom: 2rem;
+    .heading { color: #1e293b; font-weight: 800; font-size: 1.4rem; }
+  }
+
+  .avatarSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .sidebarBottom {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.emailBadge {
+  text-align: center;
+  background: #ffffff;
+  color: #64748b;
+  padding: 0.6rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid #e2e8f0;
+  word-break: break-all;
+}
+
+.avatarWrap {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  padding: 3px;
+  background: #00e5a0;
+  transition: transform 0.2s;
+}
+
+.avatarInner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #ffffff;
+  background: #e2e8f0;
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+
+.content {
+  flex: 1;
+  padding: 3rem;
+  .sectionTitle { color: #1e293b; margin-bottom: 2rem; font-size: 1.2rem; font-weight: 700; }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  label { color: #64748b; font-size: 0.8rem; font-weight: 600; }
+  input {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 0.8rem;
+    border-radius: 8px;
+    color: #1e293b;
+    &:focus { border-color: #00e5a0; outline: none; }
+  }
+  .readOnly { background: #f8fafc; color: #94a3b8; cursor: not-allowed; }
+}
+
+.btnSave {
+  width: 100%;
+  background: #00e5a0;
+  color: #ffffff;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+  &:hover:not(:disabled) { opacity: 0.9; }
+}
+
+.btnBack {
+  background: transparent;
+  border: 1px solid #cbd5e1;
+  color: #64748b;
+  padding: 0.7rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  &:hover { background: #e2e8f0; }
+}
+
+.alert {
+  padding: 0.8rem;
+  background: #ecfdf5;
+  border: 1px solid #00e5a0;
+  color: #065f46;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 0.85rem;
+  text-align: center;
+}
