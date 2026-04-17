@@ -1,4 +1,4 @@
-import { signUp } from '@/utils/db/servicefirebase';
+import { signUp } from '@/utils/db/servicefirebase-server';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 // Definisikan tipe respons agar tidak error di TypeScript
