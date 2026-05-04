@@ -18,6 +18,7 @@ export default function Header({
 }: HeaderProps) {
   const { data: session }: any = useSession();
   const router = useRouter();
+  const appName = process.env.NEXT_PUBLIC_APP_NAME || "Smart Irrigation System";
 
   const now = new Date();
   const dateStr = now.toLocaleDateString("id-ID", {
@@ -62,17 +63,8 @@ export default function Header({
               letterSpacing: "0.05em",
             }}
           >
-            Smart Irrigation System
+            {appName}
           </h1>
-          <p
-            className="text-xs"
-            style={{
-              color: "var(--text-muted)",
-              fontFamily: "'Share Tech Mono', monospace",
-            }}
-          >
-            VVPF-DLSGT-JQN-1
-          </p>
         </div>
       </div>
 
