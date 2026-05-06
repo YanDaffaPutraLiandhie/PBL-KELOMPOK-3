@@ -14,9 +14,7 @@ import app from "@/utils/db/firebase";
 type ApiResponse = {
     status: boolean;
     message: string;
-    data?: {
-        id: string;
-    };
+    data?: any;
 };
 
 type RoleValue = "Operator" | "Viewer";
@@ -32,7 +30,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<ApiResponse>,
 ) {
-    if (req.method !== "POST") {
+    if (req.method !== "POST" && req.method !== "GET") {
         return res
             .status(405)
             .json({ status: false, message: "Method not allowed" });
@@ -50,6 +48,30 @@ export default async function handler(
             .status(403)
             .json({ status: false, message: "Forbidden" });
     }
+
+    if (req.method === "GET") {
+        try {
+            const usersSnapshot = await getDocs(collection(db, USERS_COLLECTION));
+            const users = usersSnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+                password: undefined // Jangan kirim password ke frontend
+            }));
+
+            return res.status(200).json({
+                status: true,
+                message: "Berhasil mengambil data pengguna",
+                data: users,
+            });
+        } catch (error) {
+            return res.status(500).json({
+                status: false,
+                message: "Terjadi kesalahan saat mengambil data pengguna.",
+            });
+        }
+    }
+
+
 
     const { fullname, email, password, role, status } = req.body as {
         fullname?: string;

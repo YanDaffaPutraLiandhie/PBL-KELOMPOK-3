@@ -1,5 +1,5 @@
 import Head from "next/head";
-import ManagementUsersView from "@/views/management/user";
+import ManagementUsersView from "@/views/management/users";
 
 export default function UsersPage() {
   return (
