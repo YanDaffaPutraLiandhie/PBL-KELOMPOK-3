@@ -10,7 +10,7 @@ import {
     updateDoc,
 } from "firebase/firestore";
 import app from "./firebase";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 const db = getFirestore(app);
 
