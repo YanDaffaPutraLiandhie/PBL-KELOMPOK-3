@@ -14,21 +14,7 @@ import app from "@/utils/db/firebase";
 type ApiResponse = {
     status: boolean;
     message: string;
-    data?:
-    | {
-        id: string;
-        fullname: string;
-        email: string;
-        role: RoleValue;
-        status: StatusValue;
-        createdAt: string;
-    }
-    | {
-        id: string;
-    }[]
-    | {
-        id: string;
-    };
+    data?: any;
 };
 
 type RoleValue = "Operator" | "Viewer" | "Admin";
@@ -53,7 +39,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<ApiResponse>,
 ) {
-    if (req.method !== "GET" && req.method !== "POST") {
+    if (req.method !== "POST" && req.method !== "GET") {
         return res
             .status(405)
             .json({ status: false, message: "Method not allowed" });
@@ -66,46 +52,37 @@ export default async function handler(
             .json({ status: false, message: "Unauthorized" });
     }
 
-    if (String(token.role || "").toLowerCase() !== "admin") {
-        return res
-            .status(403)
-            .json({ status: false, message: "Forbidden" });
-    }
-
+    // GET: Semua user yang sudah login bisa melihat daftar user
     if (req.method === "GET") {
         try {
-            const snapshot = await getDocs(collection(db, USERS_COLLECTION));
-            const data = snapshot.docs.map((entry) => {
-                const user = entry.data() as {
-                    fullname?: string;
-                    email?: string;
-                    role?: string;
-                    status?: string;
-                    createdAt?: string;
-                };
-
-                return {
-                    id: entry.id,
-                    fullname: String(user.fullname || ""),
-                    email: String(user.email || ""),
-                    role: normalizeRole(user.role),
-                    status: normalizeStatus(user.status),
-                    createdAt: String(user.createdAt || ""),
-                };
-            });
+            const usersSnapshot = await getDocs(collection(db, USERS_COLLECTION));
+            const users = usersSnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+                password: undefined // Jangan kirim password ke frontend
+            }));
 
             return res.status(200).json({
                 status: true,
-                message: "Daftar pengguna berhasil dimuat.",
-                data,
+                message: "Berhasil mengambil data pengguna",
+                data: users,
             });
         } catch (error) {
             return res.status(500).json({
                 status: false,
-                message: "Terjadi kesalahan saat memuat pengguna.",
+                message: "Terjadi kesalahan saat mengambil data pengguna.",
             });
         }
     }
+
+    // POST: Hanya Admin yang bisa membuat user baru
+    if (String(token.role || "").toLowerCase() !== "admin") {
+        return res
+            .status(403)
+            .json({ status: false, message: "Forbidden: Hanya Admin yang bisa menambah user" });
+    }
+
+
 
     const { fullname, email, password, role, status } = req.body as {
         fullname?: string;

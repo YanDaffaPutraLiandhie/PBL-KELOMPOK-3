@@ -35,12 +35,6 @@ export default async function handler(
             .json({ status: false, message: "Unauthorized" });
     }
 
-    if (String(token.role || "").toLowerCase() !== "admin") {
-        return res
-            .status(403)
-            .json({ status: false, message: "Forbidden" });
-    }
-
     const { id } = req.query;
 
     if (!id || Array.isArray(id)) {

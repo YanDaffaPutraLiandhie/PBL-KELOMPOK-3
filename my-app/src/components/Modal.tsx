@@ -1,66 +1,78 @@
-import React from "react";
+import React, { ReactNode, useEffect } from "react";
+import { X } from "lucide-react";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title?: string;
-  children?: React.ReactNode;
+  title: string;
+  children: ReactNode;
 }
 
-export default function Modal({
-  isOpen,
-  onClose,
-  title,
-  children,
-}: ModalProps) {
+export default function Modal({ isOpen, onClose, title, children }: ModalProps) {
+  // Mencegah background scroll saat modal terbuka
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div
-        className="fixed inset-0 bg-black/65 backdrop-blur-sm"
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative z-10 w-full max-w-2xl mx-4">
-        <div
-          className="rounded-xl overflow-hidden"
-          style={{
-            background: "var(--card-bg)",
-            border: "1px solid var(--border)",
-            boxShadow:
-              "0 0 30px rgba(0, 0, 0, 0.45), 0 0 25px rgba(0, 229, 160, 0.08)",
-          }}
-        >
-          <div
-            className="flex items-center justify-between px-6 py-4 border-b"
-            style={{ borderColor: "var(--border)" }}
+      
+      {/* Konten Modal */}
+      <div 
+        className="card glow-border relative w-full max-w-md p-5 sm:p-6 shadow-2xl"
+        style={{ 
+          zIndex: 51,
+          animation: "modalFadeIn 0.2s ease-out forwards"
+        }}
+      >
+        {/* Header Modal */}
+        <div className="flex items-center justify-between mb-5 border-b pb-3" style={{ borderColor: 'var(--border)' }}>
+          <h2 className="text-lg sm:text-xl font-bold glow-text" style={{ fontFamily: "'Exo 2', sans-serif" }}>
+            {title}
+          </h2>
+          <button 
+            onClick={onClose}
+            className="p-1.5 rounded-lg transition-colors focus:outline-none"
+            style={{ color: 'var(--text-muted)' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'var(--text-primary)';
+              e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'var(--text-muted)';
+              e.currentTarget.style.background = 'transparent';
+            }}
           >
-            <h3
-              className="text-lg font-semibold"
-              style={{ color: "var(--text-primary)" }}
-            >
-              {title}
-            </h3>
-            <button
-              onClick={onClose}
-              className="text-xl leading-none transition-colors"
-              style={{ color: "var(--text-muted)" }}
-              aria-label="close modal"
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.color = "var(--primary)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.color = "var(--text-muted)")
-              }
-            >
-              ×
-            </button>
-          </div>
-          <div className="p-6" style={{ background: "transparent" }}>
-            {children}
-          </div>
+            <X size={18} />
+          </button>
+        </div>
+        
+        {/* Body Modal */}
+        <div className="mt-2 text-sm sm:text-base">
+          {children}
         </div>
       </div>
+
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes modalFadeIn {
+          from { opacity: 0; transform: scale(0.95) translateY(10px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+      `}} />
     </div>
   );
 }

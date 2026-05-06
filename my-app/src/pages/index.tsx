@@ -10,7 +10,7 @@ import IrrigationModes from "@/components/IrrigationModes";
 import { generateSensorData, generateIrrigationEvents } from "@/lib/mockData";
 import type { IrrigationEvent } from "@/lib/mockData";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { saveLog } from "@/utils/db/servicefirebase";
 export default function Dashboard() {
   const { data: session, status }: any = useSession();
