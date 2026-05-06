@@ -14,25 +14,46 @@ import app from "@/utils/db/firebase";
 type ApiResponse = {
     status: boolean;
     message: string;
-    data?: {
+    data?:
+    | {
+        id: string;
+        fullname: string;
+        email: string;
+        role: RoleValue;
+        status: StatusValue;
+        createdAt: string;
+    }
+    | {
+        id: string;
+    }[]
+    | {
         id: string;
     };
 };
 
-type RoleValue = "Operator" | "Viewer";
+type RoleValue = "Operator" | "Viewer" | "Admin";
+type StatusValue = "Aktif" | "Nonaktif";
 
 const db = getFirestore(app);
 const USERS_COLLECTION = "users";
 
 function normalizeRole(role?: string): RoleValue {
-    return role === "Operator" ? "Operator" : "Viewer";
+    const normalizedRole = String(role || "").trim().toLowerCase();
+
+    if (normalizedRole === "admin") return "Admin";
+    if (normalizedRole === "operator") return "Operator";
+    return "Viewer";
+}
+
+function normalizeStatus(status?: string): StatusValue {
+    return status === "Nonaktif" ? "Nonaktif" : "Aktif";
 }
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<ApiResponse>,
 ) {
-    if (req.method !== "POST") {
+    if (req.method !== "GET" && req.method !== "POST") {
         return res
             .status(405)
             .json({ status: false, message: "Method not allowed" });
@@ -49,6 +70,41 @@ export default async function handler(
         return res
             .status(403)
             .json({ status: false, message: "Forbidden" });
+    }
+
+    if (req.method === "GET") {
+        try {
+            const snapshot = await getDocs(collection(db, USERS_COLLECTION));
+            const data = snapshot.docs.map((entry) => {
+                const user = entry.data() as {
+                    fullname?: string;
+                    email?: string;
+                    role?: string;
+                    status?: string;
+                    createdAt?: string;
+                };
+
+                return {
+                    id: entry.id,
+                    fullname: String(user.fullname || ""),
+                    email: String(user.email || ""),
+                    role: normalizeRole(user.role),
+                    status: normalizeStatus(user.status),
+                    createdAt: String(user.createdAt || ""),
+                };
+            });
+
+            return res.status(200).json({
+                status: true,
+                message: "Daftar pengguna berhasil dimuat.",
+                data,
+            });
+        } catch (error) {
+            return res.status(500).json({
+                status: false,
+                message: "Terjadi kesalahan saat memuat pengguna.",
+            });
+        }
     }
 
     const { fullname, email, password, role, status } = req.body as {
@@ -96,7 +152,7 @@ export default async function handler(
             email: preparedEmail,
             password: hashedPassword,
             role: normalizeRole(role),
-            status: status === "Nonaktif" ? "Nonaktif" : "Aktif",
+            status: normalizeStatus(status),
             createdAt: new Date().toISOString(),
             source: "management",
         });

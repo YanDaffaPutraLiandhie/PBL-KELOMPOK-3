@@ -14,7 +14,7 @@ import {
 } from "firebase/firestore";
 import app from "./firebase";
 
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 // Ambil semua produk
 export async function retrieveProducts(collectionName: string) {
