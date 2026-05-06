@@ -338,15 +338,8 @@ export default function Users() {
                     {users.map((user) => (
                       <tr
                         key={user.id}
-                        className="border-b transition-colors"
+                        className="border-b transition-colors hover:bg-[rgba(0,200,255,0.06)]"
                         style={{ borderColor: "var(--border)" }}
-                        onMouseEnter={(event) => {
-                          event.currentTarget.style.background =
-                            "rgba(0, 200, 255, 0.06)";
-                        }}
-                        onMouseLeave={(event) => {
-                          event.currentTarget.style.background = "transparent";
-                        }}
                       >
                         <td className="px-4 py-3">{user.fullname}</td>
                         <td className="px-4 py-3">{user.email}</td>
