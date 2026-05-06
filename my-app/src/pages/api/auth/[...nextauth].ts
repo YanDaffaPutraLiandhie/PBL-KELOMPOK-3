@@ -1,7 +1,7 @@
 import { signIn as signInFirebase, loginWithOAuth } from "@/utils/db/servicefirebase-server";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "@/utils/db/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore"; 

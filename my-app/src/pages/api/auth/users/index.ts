@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import { getToken } from "next-auth/jwt";
 import {
     addDoc,
