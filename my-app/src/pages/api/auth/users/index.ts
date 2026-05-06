@@ -17,13 +17,22 @@ type ApiResponse = {
     data?: any;
 };
 
-type RoleValue = "Operator" | "Viewer";
+type RoleValue = "Operator" | "Viewer" | "Admin";
+type StatusValue = "Aktif" | "Nonaktif";
 
 const db = getFirestore(app);
 const USERS_COLLECTION = "users";
 
 function normalizeRole(role?: string): RoleValue {
-    return role === "Operator" ? "Operator" : "Viewer";
+    const normalizedRole = String(role || "").trim().toLowerCase();
+
+    if (normalizedRole === "admin") return "Admin";
+    if (normalizedRole === "operator") return "Operator";
+    return "Viewer";
+}
+
+function normalizeStatus(status?: string): StatusValue {
+    return status === "Nonaktif" ? "Nonaktif" : "Aktif";
 }
 
 export default async function handler(
@@ -120,7 +129,7 @@ export default async function handler(
             email: preparedEmail,
             password: hashedPassword,
             role: normalizeRole(role),
-            status: status === "Nonaktif" ? "Nonaktif" : "Aktif",
+            status: normalizeStatus(status),
             createdAt: new Date().toISOString(),
             source: "management",
         });

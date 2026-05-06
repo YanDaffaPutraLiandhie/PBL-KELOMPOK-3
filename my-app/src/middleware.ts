@@ -11,4 +11,5 @@ export default withAuth(mainMiddleware, [
   "admin",
   "setting",
   "dashboard", 
+  "management",
 ]);
