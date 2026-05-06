@@ -43,12 +43,7 @@ export default async function handler(
             .json({ status: false, message: "Unauthorized" });
     }
 
-    if (String(token.role || "").toLowerCase() !== "admin") {
-        return res
-            .status(403)
-            .json({ status: false, message: "Forbidden" });
-    }
-
+    // GET: Semua user yang sudah login bisa melihat daftar user
     if (req.method === "GET") {
         try {
             const usersSnapshot = await getDocs(collection(db, USERS_COLLECTION));
@@ -69,6 +64,13 @@ export default async function handler(
                 message: "Terjadi kesalahan saat mengambil data pengguna.",
             });
         }
+    }
+
+    // POST: Hanya Admin yang bisa membuat user baru
+    if (String(token.role || "").toLowerCase() !== "admin") {
+        return res
+            .status(403)
+            .json({ status: false, message: "Forbidden: Hanya Admin yang bisa menambah user" });
     }
 
 
