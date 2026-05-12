@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import {
   AreaChart,
@@ -37,14 +37,37 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-export default function ChartSection() {
+interface ChartSectionProps {
+  data: {
+    soilMoisture: number;
+    temperature: number;
+  };
+}
+
+export default function ChartSection({ data }: ChartSectionProps) {
   const router = useRouter();
   const [chartData, setChartData] = useState(generateChartData());
+  const latestDataRef = useRef(data);
+
+  useEffect(() => {
+    latestDataRef.current = data;
+  }, [data]);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setChartData(generateChartData());
-    }, 10000);
+      setChartData((prev) => {
+        const newData = [...prev];
+        const now = new Date();
+        const label = now.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+        newData.push({
+          time: label,
+          kelembaban: latestDataRef.current.soilMoisture,
+          suhu: latestDataRef.current.temperature,
+        });
+        if (newData.length > 15) newData.shift();
+        return newData;
+      });
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 

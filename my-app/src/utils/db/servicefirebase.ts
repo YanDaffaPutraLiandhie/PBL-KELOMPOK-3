@@ -8,12 +8,13 @@ import {
     addDoc,
     where,
     updateDoc,
+    setDoc,
     orderBy,
     limit,
 } from "firebase/firestore";
 import app from "./firebase";
 
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 // Ambil semua produk
 export async function retrieveProducts(collectionName: string) {
@@ -61,5 +62,39 @@ export async function getLogs(limitCount: number = 100) {
     } catch (error: any) {
         console.error("Error getting logs:", error);
         return [];
+    }
+}
+
+// Ambil konfigurasi threshold (simpan di collection 'config', doc 'thresholds')
+export async function getThresholdConfig() {
+    try {
+        const docRef = doc(db, "config", "thresholds");
+        const snap = await getDoc(docRef);
+        if (!snap.exists()) {
+            // Return sensible defaults if not set
+            return {
+                soilMoistureMin: 30,
+                soilMoistureMax: 70,
+                temperatureMin: 18,
+                temperatureMax: 30,
+                alertThreshold: 85,
+            };
+        }
+        return snap.data();
+    } catch (error: any) {
+        console.error("Error getting threshold config:", error);
+        return null;
+    }
+}
+
+// Simpan atau perbarui konfigurasi threshold
+export async function setThresholdConfig(data: any) {
+    try {
+        const docRef = doc(db, "config", "thresholds");
+        await setDoc(docRef, data, { merge: true });
+        return { status: true };
+    } catch (error: any) {
+        console.error("Error setting threshold config:", error);
+        return { status: false, message: error.message };
     }
 }

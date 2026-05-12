@@ -1,10 +1,10 @@
 import { signIn as signInFirebase, loginWithOAuth } from "@/utils/db/servicefirebase-server";
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import GoogleProvider from "next-auth/providers/google";
 import { db } from "@/utils/db/firebase";
-import { collection, query, where, getDocs } from "firebase/firestore"; 
+import { collection, query, where, getDocs } from "firebase/firestore";
 
 export const authOptions: NextAuthOptions = {
     session: {
@@ -49,9 +49,9 @@ export const authOptions: NextAuthOptions = {
     ],
 
     callbacks: {
-       async jwt({ token, account, user, trigger, session }: any) {
+        async jwt({ token, account, user, trigger, session }: any) {
             // 1. Logika untuk Login Email/Password (Credentials)
-           if (user) {
+            if (user) {
                 token.email = user.email;
                 token.fullname = user.fullname;
                 token.role = user.role;
@@ -77,9 +77,9 @@ export const authOptions: NextAuthOptions = {
                     }
                 });
             }
-            
 
-         // 3. LOGIKA SINKRONISASI (Agar Nama Tidak Balik Lagi)
+
+            // 3. LOGIKA SINKRONISASI (Agar Nama Tidak Balik Lagi)
             if (trigger === "update" && session?.user?.fullname) {
                 // Update realtime saat klik tombol simpan
                 token.fullname = session.user.fullname;
@@ -88,7 +88,7 @@ export const authOptions: NextAuthOptions = {
                 try {
                     const q = query(collection(db, "users"), where("email", "==", token.email));
                     const querySnapshot = await getDocs(q);
-                    
+
                     if (!querySnapshot.empty) {
                         const userData = querySnapshot.docs[0].data();
                         token.fullname = userData.fullname;
@@ -99,7 +99,7 @@ export const authOptions: NextAuthOptions = {
                     console.error("Gagal sinkronisasi Firestore:", error);
                 }
             }
-            
+
             return token;
         },
 

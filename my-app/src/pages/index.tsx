@@ -7,19 +7,32 @@ import IrrigationTracking from "@/components/IrrigationTracking";
 import ActivityLog from "@/components/ActivityLog";
 import WaterAvailability from "@/components/WaterAvailability";
 import IrrigationModes from "@/components/IrrigationModes";
-import { generateSensorData, generateIrrigationEvents } from "@/lib/mockData";
 import type { IrrigationEvent } from "@/lib/mockData";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import { saveLog } from "@/utils/db/servicefirebase";
+
+import { getFirestore, collection, query, orderBy, limit, where, onSnapshot, getDocs } from "firebase/firestore";
+import app, { db as realtimeDb } from "@/utils/db/firebase";
+import { ref, onValue, set, update } from "firebase/database";
+
+const firestoreDb = getFirestore(app);
+
 export default function Dashboard() {
   const { data: session, status }: any = useSession();
   const router = useRouter();
   const [theme, setTheme] = useState<"dark" | "light">("dark");
-  const [sensorData, setSensorData] = useState({ soilMoisture: 0, temperature: 0, pumpStatus: "NON-AKTIF" });
+  const [sensorData, setSensorData] = useState({
+    soilMoisture: 0,
+    temperature: 0,
+    pumpStatus: "NON-AKTIF",
+    waterLevel: 0,
+    waterLevelLCM: 0,
+  });
   const [logs, setLogs] = useState<{ time: string; message: string; type: string }[]>([]);
   const [isOnline, setIsOnline] = useState(true);
   const [irrigationEvents, setIrrigationEvents] = useState<IrrigationEvent[]>([]);
+
   const [isHydrated, setIsHydrated] = useState(false);
 
   // State untuk threshold konfigurasi
@@ -48,24 +61,86 @@ export default function Dashboard() {
   const showMoistureWarning = threshold && sensorData && (sensorData.soilMoisture < threshold.soilMoistureMin || sensorData.soilMoisture > threshold.soilMoistureMax);
   const showTempWarning = threshold && sensorData && (sensorData.temperature < threshold.temperatureMin || sensorData.temperature > threshold.temperatureMax);
   const showAlert = threshold && sensorData && (sensorData.soilMoisture > threshold.alertThreshold);
-  // ...existing code...
 
-  // Initialize data after hydration and setup real-time updates (only for sensor values, not pump status)
+
+
+  // Initialize data after hydration and setup real-time updates
   useEffect(() => {
     setIsHydrated(true);
-    setSensorData(generateSensorData());
-    setIrrigationEvents(generateIrrigationEvents());
 
-    // Only update sensor values (soilMoisture and temperature), not pump status
-    const interval = setInterval(() => {
-      setSensorData((prev) => ({
-        ...prev,
-        soilMoisture: 48 + Math.floor(Math.random() * 6 - 3),
-        temperature: 25 + parseFloat((Math.random() * 2 - 1).toFixed(1)),
-      }));
-    }, 5000);
-    return () => clearInterval(interval);
+    // 1) Subscribe latest sensor snapshot (from Realtime Database)
+    const smartPlantRef = ref(realtimeDb, 'SmartPlant');
+    const unsubSensor = onValue(smartPlantRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setSensorData({
+          soilMoisture: data.soilMoisture ?? 0,
+          temperature: data.temperature ?? 0,
+          pumpStatus: data.pumpStatus ? "AKTIF" : "NON-AKTIF",
+          waterLevel: data.waterLevel ?? 0,
+          waterLevelLCM: data.waterLevelCM ?? 0,
+        });
+      }
+    });
+
+    // 2) Subscribe latest logs (and derive irrigation events from logs)
+    const logsQ = query(
+      collection(firestoreDb, "logs"),
+      orderBy("timestamp", "desc"),
+      limit(200)
+    );
+
+    const unsubLogs = onSnapshot(logsQ, (snapshot) => {
+      const mapped = snapshot.docs.map((doc) => {
+        const d: any = doc.data();
+        const ts: Date = d.timestamp?.toDate?.() ?? new Date(d.createdAt ?? Date.now());
+        return {
+          time: ts.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+          message: d.message,
+          type: d.type,
+        };
+      });
+      setLogs(mapped);
+
+      // Derive irrigation events from logs (type pump/action)
+      const derived: IrrigationEvent[] = snapshot.docs
+        .map((doc) => {
+          const d: any = doc.data();
+          const ts: Date = d.timestamp?.toDate?.() ?? new Date(d.createdAt ?? Date.now());
+          const msg: string = String(d.message ?? "");
+          const type: string = String(d.type ?? "");
+
+          // Only convert relevant logs
+          if (type !== "pump" && type !== "action") return null;
+
+          // Pump on => quick (duration default)
+          if (type === "pump") {
+            if (msg.toLowerCase().includes("dihidupkan") || msg.toLowerCase().includes("aktif")) {
+              return { timestamp: ts, duration: 5, type: "quick" } as IrrigationEvent;
+            }
+            return null;
+          }
+
+          // Action => map by keywords (cepat/intensif/hemat)
+          const lower = msg.toLowerCase();
+          if (lower.includes("cepat")) return { timestamp: ts, duration: 5, type: "quick" } as IrrigationEvent;
+          if (lower.includes("intensif")) return { timestamp: ts, duration: 10, type: "intensive" } as IrrigationEvent;
+          if (lower.includes("hemat")) return { timestamp: ts, duration: 20, type: "water-saving" } as IrrigationEvent;
+          return null;
+        })
+        .filter(Boolean) as IrrigationEvent[];
+
+      // sort asc so filtering by date works properly
+      derived.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+      setIrrigationEvents(derived);
+    });
+
+    return () => {
+      unsubSensor();
+      unsubLogs();
+    };
   }, []);
+
 
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
@@ -80,6 +155,10 @@ export default function Dashboard() {
 
     // Simpan log ke Firebase
     await saveLog({ message, type: "pump", timestamp: now });
+
+    // Update Realtime Database
+    const smartPlantRef = ref(realtimeDb, 'SmartPlant');
+    update(smartPlantRef, { pumpStatus: state });
 
     // Update sensor data to reflect pump status change
     setSensorData((prev) => ({
@@ -180,10 +259,11 @@ export default function Dashboard() {
               </div>
             )}
             {/* Sensor Cards Row */}
-            {isHydrated && <SensorCards data={sensorData} onPumpToggle={handlePumpToggle} />}
+              <SensorCards data={sensorData} onPumpToggle={handlePumpToggle} />
+
 
             {/* Charts Row */}
-            {isHydrated && <ChartSection />}
+            {isHydrated && <ChartSection data={sensorData} />}
 
             {/* Stats + Log Row */}
             {isHydrated && (
@@ -194,7 +274,7 @@ export default function Dashboard() {
             )}
 
             {/* Water Availability */}
-            {isHydrated && <WaterAvailability percentage={90} />}
+            {isHydrated && <WaterAvailability percentage={sensorData.waterLevel} />}
 
             {/* Irrigation Modes */}
             {isHydrated && (

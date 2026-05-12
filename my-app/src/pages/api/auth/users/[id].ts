@@ -9,6 +9,7 @@ type ApiResponse = {
     data?: {
         id: string;
         fullname: string;
+        email: string;
         role: "Operator" | "Viewer";
         status: "Aktif" | "Nonaktif";
     };
@@ -32,12 +33,6 @@ export default async function handler(
         return res
             .status(401)
             .json({ status: false, message: "Unauthorized" });
-    }
-
-    if (String(token.role || "").toLowerCase() !== "admin") {
-        return res
-            .status(403)
-            .json({ status: false, message: "Forbidden" });
     }
 
     const { id } = req.query;
@@ -72,22 +67,27 @@ export default async function handler(
         if (req.method === "PUT") {
             const { fullname, role, status } = req.body as {
                 fullname?: string;
+                email?: string;
                 role?: string;
                 status?: string;
             };
 
             const preparedName = String(fullname || "").trim();
+            const preparedEmail = String((req.body as { email?: string }).email || "")
+                .trim()
+                .toLowerCase();
             const preparedRole = role === "Operator" ? "Operator" : "Viewer";
             const preparedStatus = status === "Nonaktif" ? "Nonaktif" : "Aktif";
 
-            if (!preparedName) {
+            if (!preparedName || !preparedEmail) {
                 return res
                     .status(400)
-                    .json({ status: false, message: "Nama user wajib diisi." });
+                    .json({ status: false, message: "Nama dan email user wajib diisi." });
             }
 
             await updateDoc(userRef, {
                 fullname: preparedName,
+                email: preparedEmail,
                 role: preparedRole,
                 status: preparedStatus,
                 updatedAt: new Date().toISOString(),
@@ -99,6 +99,7 @@ export default async function handler(
                 data: {
                     id,
                     fullname: preparedName,
+                    email: preparedEmail,
                     role: preparedRole,
                     status: preparedStatus,
                 },

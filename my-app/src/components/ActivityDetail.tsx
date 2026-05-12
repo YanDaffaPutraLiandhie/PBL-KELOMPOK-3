@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import React, { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface LogEntry {
   time: string;
@@ -13,18 +13,24 @@ interface ActivityDetailProps {
 }
 
 enum TimePeriod {
-  TODAY = 'today',
-  THIS_WEEK = 'week',
-  THIS_MONTH = 'month',
+  TODAY = "today",
+  THIS_WEEK = "week",
+  THIS_MONTH = "month",
 }
 
 export default function ActivityDetail({ logs = [] }: ActivityDetailProps) {
-  const [expandedPeriod, setExpandedPeriod] = useState<TimePeriod | null>(TimePeriod.TODAY);
+  const [expandedPeriod, setExpandedPeriod] = useState<TimePeriod | null>(
+    TimePeriod.TODAY,
+  );
 
   // Convert Firebase logs to component format
   const convertLogs = (firebaseLogs: any[]): LogEntry[] => {
-    return firebaseLogs.map(log => ({
-      time: log.timestamp.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+    return firebaseLogs.map((log) => ({
+      time: log.timestamp.toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }),
       message: log.message,
       type: log.type,
       timestamp: log.timestamp,
@@ -35,11 +41,11 @@ export default function ActivityDetail({ logs = [] }: ActivityDetailProps) {
   const generateLogsWithTimestamps = (): LogEntry[] => {
     const now = new Date();
     const sampleMessages = [
-      { msg: 'Pompa dihidupkan (AKTIF)', type: 'pump' },
-      { msg: 'Pompa dimatikan (NON-AKTIF)', type: 'pump' },
-      { msg: 'Mode penyiraman cepat diaktifkan', type: 'action' },
-      { msg: 'Mode penyiraman intensif diaktifkan', type: 'action' },
-      { msg: 'Mode hemat air diaktifkan', type: 'action' },
+      { msg: "Pompa dihidupkan (AKTIF)", type: "pump" },
+      { msg: "Pompa dimatikan (NON-AKTIF)", type: "pump" },
+      { msg: "Mode penyiraman cepat diaktifkan", type: "action" },
+      { msg: "Mode penyiraman intensif diaktifkan", type: "action" },
+      { msg: "Mode hemat air diaktifkan", type: "action" },
     ];
 
     const generatedLogs: LogEntry[] = [];
@@ -49,9 +55,14 @@ export default function ActivityDetail({ logs = [] }: ActivityDetailProps) {
       const date = new Date(now);
       date.setHours(Math.floor(Math.random() * 24));
       date.setMinutes(Math.floor(Math.random() * 60));
-      const sample = sampleMessages[Math.floor(Math.random() * sampleMessages.length)];
+      const sample =
+        sampleMessages[Math.floor(Math.random() * sampleMessages.length)];
       generatedLogs.push({
-        time: date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        time: date.toLocaleTimeString("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
         message: sample.msg,
         type: sample.type,
         timestamp: date,
@@ -64,9 +75,14 @@ export default function ActivityDetail({ logs = [] }: ActivityDetailProps) {
       date.setDate(date.getDate() - Math.floor(Math.random() * 6));
       date.setHours(Math.floor(Math.random() * 24));
       date.setMinutes(Math.floor(Math.random() * 60));
-      const sample = sampleMessages[Math.floor(Math.random() * sampleMessages.length)];
+      const sample =
+        sampleMessages[Math.floor(Math.random() * sampleMessages.length)];
       generatedLogs.push({
-        time: date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        time: date.toLocaleTimeString("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
         message: sample.msg,
         type: sample.type,
         timestamp: date,
@@ -79,9 +95,14 @@ export default function ActivityDetail({ logs = [] }: ActivityDetailProps) {
       date.setDate(Math.floor(Math.random() * 28) + 1);
       date.setHours(Math.floor(Math.random() * 24));
       date.setMinutes(Math.floor(Math.random() * 60));
-      const sample = sampleMessages[Math.floor(Math.random() * sampleMessages.length)];
+      const sample =
+        sampleMessages[Math.floor(Math.random() * sampleMessages.length)];
       generatedLogs.push({
-        time: date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+        time: date.toLocaleTimeString("id-ID", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
         message: sample.msg,
         type: sample.type,
         timestamp: date,
@@ -91,7 +112,8 @@ export default function ActivityDetail({ logs = [] }: ActivityDetailProps) {
     return generatedLogs;
   };
 
-  const allLogs = logs.length > 0 ? convertLogs(logs) : generateLogsWithTimestamps();
+  const allLogs =
+    logs.length > 0 ? convertLogs(logs) : generateLogsWithTimestamps();
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const weekAgo = new Date(today);
@@ -132,35 +154,50 @@ export default function ActivityDetail({ logs = [] }: ActivityDetailProps) {
     const isExpanded = expandedPeriod === period;
 
     return (
-      <div className="border rounded-lg overflow-hidden" style={{ borderColor: 'var(--border-color, #374151)' }}>
+      <div
+        className="border rounded-lg overflow-hidden"
+        style={{ borderColor: "var(--border-color, #374151)" }}
+      >
         <button
           onClick={() => togglePeriod(period)}
           className="w-full flex items-center justify-between p-4 hover:opacity-80 transition-opacity"
-          style={{ background: 'var(--bg-800)' }}
+          style={{ background: "var(--bg-800)" }}
         >
           <div className="flex items-center gap-3">
-            <h3 className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
+            <h3
+              className="text-sm font-semibold"
+              style={{ color: "var(--text-primary)" }}
+            >
               {title}
             </h3>
             <span
               className="text-xs px-2 py-1 rounded-full"
-              style={{ background: 'var(--bg-700)', color: 'var(--text-secondary)' }}
+              style={{
+                background: "var(--bg-700)",
+                color: "var(--text-secondary)",
+              }}
             >
               {count}
             </span>
           </div>
           {isExpanded ? (
-            <ChevronUp size={20} style={{ color: 'var(--text-secondary)' }} />
+            <ChevronUp size={20} style={{ color: "var(--text-secondary)" }} />
           ) : (
-            <ChevronDown size={20} style={{ color: 'var(--text-secondary)' }} />
+            <ChevronDown size={20} style={{ color: "var(--text-secondary)" }} />
           )}
         </button>
 
         {isExpanded && (
-          <div className="divide-y" style={{ borderTopColor: 'var(--border-color, #374151)', divideColor: 'var(--border-color, #374151)' }}>
+          <div
+            className="divide-y"
+            style={{ borderTopColor: "var(--border-color, #374151)" }}
+          >
             {sectionLogs.length === 0 ? (
-              <div className="p-4 text-center" style={{ background: 'var(--bg-900)' }}>
-                <p style={{ color: 'var(--text-muted)' }} className="text-sm">
+              <div
+                className="p-4 text-center"
+                style={{ background: "var(--bg-900)" }}
+              >
+                <p style={{ color: "var(--text-muted)" }} className="text-sm">
                   Tidak ada log untuk periode ini
                 </p>
               </div>
@@ -170,25 +207,31 @@ export default function ActivityDetail({ logs = [] }: ActivityDetailProps) {
                   key={idx}
                   className="p-4 border-l-4 transition-colors hover:opacity-80"
                   style={{
-                    background: 'var(--bg-900)',
-                    borderLeftColor: log.type === 'action' ? 'var(--primary, #00e5a0)' : '#00c8ff',
+                    background: "var(--bg-900)",
+                    borderLeftColor:
+                      log.type === "action"
+                        ? "var(--primary, #00e5a0)"
+                        : "#00c8ff",
                   }}
                 >
                   <div className="flex justify-between items-start gap-4">
                     <div className="flex-1">
                       <p
-                        style={{ color: 'var(--text-muted)' }}
+                        style={{ color: "var(--text-muted)" }}
                         className="text-xs mb-1"
                       >
-                        {new Date(log.timestamp).toLocaleDateString('id-ID', {
-                          weekday: 'long',
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}{' '}
+                        {new Date(log.timestamp).toLocaleDateString("id-ID", {
+                          weekday: "long",
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}{" "}
                         {log.time}
                       </p>
-                      <p style={{ color: 'var(--text-primary)' }} className="text-sm font-medium">
+                      <p
+                        style={{ color: "var(--text-primary)" }}
+                        className="text-sm font-medium"
+                      >
                         {log.message}
                       </p>
                     </div>
@@ -196,13 +239,16 @@ export default function ActivityDetail({ logs = [] }: ActivityDetailProps) {
                       className="text-xs px-3 py-1 rounded-full whitespace-nowrap"
                       style={{
                         background:
-                          log.type === 'action'
-                            ? 'rgba(0, 229, 160, 0.1)'
-                            : 'rgba(0, 200, 255, 0.1)',
-                        color: log.type === 'action' ? 'var(--primary, #00e5a0)' : '#00c8ff',
+                          log.type === "action"
+                            ? "rgba(0, 229, 160, 0.1)"
+                            : "rgba(0, 200, 255, 0.1)",
+                        color:
+                          log.type === "action"
+                            ? "var(--primary, #00e5a0)"
+                            : "#00c8ff",
                       }}
                     >
-                      {log.type === 'action' ? 'Aksi' : 'Pompa'}
+                      {log.type === "action" ? "Aksi" : "Pompa"}
                     </span>
                   </div>
                 </div>
@@ -217,10 +263,13 @@ export default function ActivityDetail({ logs = [] }: ActivityDetailProps) {
   return (
     <div className="space-y-4">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+        <h2
+          className="text-2xl font-bold"
+          style={{ color: "var(--text-primary)" }}
+        >
           Log Aktivitas
         </h2>
-        <p style={{ color: 'var(--text-secondary)' }} className="text-sm mt-1">
+        <p style={{ color: "var(--text-secondary)" }} className="text-sm mt-1">
           Total: {allLogs.length} aktivitas
         </p>
       </div>
