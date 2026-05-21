@@ -230,47 +230,18 @@ export default function Dashboard() {
           <Header theme={theme} onToggleTheme={toggleTheme} isOnline={isOnline} />
 
           <main className="px-4 pb-8 pt-2 max-w-7xl mx-auto" suppressHydrationWarning>
-            {/* Tampilkan threshold info dan warning jika ada */}
-            {!thresholdLoading && threshold && (
-              <div className="mb-4">
-                <div className="text-xs text-[var(--primary)]">Konfigurasi Threshold saat ini:</div>
-                <div className="flex flex-wrap gap-4 text-xs">
-                  <span>Kelembapan Min: <b>{threshold.soilMoistureMin}</b></span>
-                  <span>Kelembapan Max: <b>{threshold.soilMoistureMax}</b></span>
-                  <span>Suhu Min: <b>{threshold.temperatureMin}°C</b></span>
-                  <span>Suhu Max: <b>{threshold.temperatureMax}°C</b></span>
-                  <span>Alert: <b>{threshold.alertThreshold}</b></span>
-                </div>
-                {showMoistureWarning && (
-                  <div className="mt-2 p-2 rounded bg-yellow-900/60 text-yellow-300 border border-yellow-400 text-xs font-semibold">
-                    Kelembapan tanah di luar batas threshold!
-                  </div>
-                )}
-                {showTempWarning && (
-                  <div className="mt-2 p-2 rounded bg-orange-900/60 text-orange-300 border border-orange-400 text-xs font-semibold">
-                    Suhu lingkungan di luar batas threshold!
-                  </div>
-                )}
-                {showAlert && (
-                  <div className="mt-2 p-2 rounded bg-pink-900/60 text-pink-300 border border-pink-400 text-xs font-semibold">
-                    ALERT: Kelembapan tanah melebihi ambang batas alert!
-                  </div>
-                )}
-              </div>
-            )}
             {/* Sensor Cards Row */}
-              <SensorCards data={sensorData} onPumpToggle={handlePumpToggle} />
-
+            <SensorCards data={sensorData} onPumpToggle={handlePumpToggle} />
 
             {/* Charts Row */}
             {isHydrated && <ChartSection data={sensorData} />}
 
             {/* Stats + Log Row */}
             {isHydrated && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              <IrrigationTracking irrigationData={irrigationEvents} />
-              <ActivityLog logs={logs} />
-            </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <IrrigationTracking irrigationData={irrigationEvents} />
+                <ActivityLog logs={logs} />
+              </div>
             )}
 
             {/* Water Availability */}
@@ -278,10 +249,10 @@ export default function Dashboard() {
 
             {/* Irrigation Modes */}
             {isHydrated && (
-            <IrrigationModes 
-              onAction={handleQuickAction} 
-              isPumpActive={sensorData.pumpStatus === "AKTIF"}
-            />
+              <IrrigationModes 
+                onAction={handleQuickAction} 
+                isPumpActive={sensorData.pumpStatus === "AKTIF"}
+              />
             )}
           </main>
         </div>

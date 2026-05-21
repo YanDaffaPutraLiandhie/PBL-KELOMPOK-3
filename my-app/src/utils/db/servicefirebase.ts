@@ -13,6 +13,7 @@ import {
     limit,
 } from "firebase/firestore";
 import app from "./firebase";
+import { getDatabase as getRTDB, ref as rtdbRef, set as rtdbSet } from "firebase/database";
 
 export const db = getFirestore(app);
 
@@ -73,10 +74,10 @@ export async function getThresholdConfig() {
         if (!snap.exists()) {
             // Return sensible defaults if not set
             return {
-                soilMoistureMin: 30,
+                soilMoistureMin: 35,
                 soilMoistureMax: 70,
                 temperatureMin: 18,
-                temperatureMax: 30,
+                temperatureMax: 32,
                 alertThreshold: 85,
             };
         }
@@ -92,6 +93,11 @@ export async function setThresholdConfig(data: any) {
     try {
         const docRef = doc(db, "config", "thresholds");
         await setDoc(docRef, data, { merge: true });
+        
+        // Simpan juga ke Realtime Database agar bisa dibaca Arduino
+        const rtdbInstance = getRTDB(app);
+        await rtdbSet(rtdbRef(rtdbInstance, "SmartPlant/config/thresholds"), data);
+        
         return { status: true };
     } catch (error: any) {
         console.error("Error setting threshold config:", error);

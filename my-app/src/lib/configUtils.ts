@@ -1,10 +1,10 @@
 export const defaultConfig = {
-  soilMoistureMin: 30,
-  soilMoistureMax: 70,
-  temperatureMin: 20,
-  temperatureMax: 35,
-  alertThreshold: 80,
-};
+    soilMoistureMin: 35,
+    soilMoistureMax: 70,
+    temperatureMin: 18,
+    temperatureMax: 32,
+    alertThreshold: 85,
+  };
 
 export function validateConfig(config: typeof defaultConfig, setNotif: (n: {type: 'success'|'error', message: string}) => void) {
   if (

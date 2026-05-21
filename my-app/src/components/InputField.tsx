@@ -12,6 +12,7 @@ interface InputFieldProps {
   description: string;
   min: number;
   max: number;
+  className?: string;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -25,8 +26,9 @@ const InputField: React.FC<InputFieldProps> = ({
   description,
   min,
   max,
+  className = "",
 }) => (
-  <div className={`flex items-center gap-3 bg-[var(--bg-600)] rounded-lg px-4 py-3 border border-[var(--border)] flex-1`}>
+  <div className={`flex items-center gap-3 rounded-lg px-4 py-3 border flex-1 ${className}`}>
     {icon}
     <div className="w-full">
       <div className="flex items-center gap-1 mb-1">
@@ -38,7 +40,7 @@ const InputField: React.FC<InputFieldProps> = ({
         name={name}
         value={value}
         onChange={onChange}
-        className={`w-full px-3 py-2 rounded bg-transparent border ${colorClass.replace('text-', 'border-')} focus:outline-none focus:ring-2 focus:ring-${colorClass.split('-')[1]}-400`}
+        className={`w-full px-3 py-2 rounded border focus:outline-none focus:ring-2 ${colorClass.replace('text-', 'border-')} focus:ring-${colorClass.split('-')[1]}-400 bg-inherit`}
         min={min}
         max={max}
       />
